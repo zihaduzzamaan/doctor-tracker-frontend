@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
+import { formatErrorMessage } from '@/lib/errorHandler';
 import { ApiResponse, User } from '@/lib/types';
 
 export default function LoginPage() {
@@ -42,7 +43,7 @@ export default function LoginPage() {
         throw new Error(response.message || 'Authentication failed');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Invalid login credentials');
+      setError(formatErrorMessage(err));
     } finally {
       setIsLoading(false);
     }

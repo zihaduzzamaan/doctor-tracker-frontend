@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Patient, Doctor, ApiResponse } from '@/lib/types';
 import { api } from '@/lib/api';
+import { formatErrorMessage } from '@/lib/errorHandler';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
@@ -53,6 +54,7 @@ export function PatientModal({
     patient_name: '',
     age: 40,
     gender: 'male' as 'male' | 'female' | 'other',
+    phone: '',
     condition: '',
     admission_date: new Date().toISOString().split('T')[0],
     doctor_id: '',
@@ -73,6 +75,7 @@ export function PatientModal({
         patient_name: patient.patient_name || '',
         age: patient.age || 40,
         gender: patient.gender || 'male',
+        phone: (patient as any).phone || '',
         condition: patient.condition || '',
         admission_date: patient.admission_date
           ? new Date(patient.admission_date).toISOString().split('T')[0]
@@ -86,6 +89,7 @@ export function PatientModal({
         patient_name: '',
         age: 35,
         gender: 'male',
+        phone: '',
         condition: '',
         admission_date: new Date().toISOString().split('T')[0],
         doctor_id: defaultDoctorId || (doctorOptions[0]?.value || ''),
@@ -98,10 +102,14 @@ export function PatientModal({
 
   const mutation = useMutation({
     mutationFn: (data: typeof formData) => {
+      const payload = {
+        ...data,
+        phone: data.phone.trim() || '+1 (555) 010-0000',
+      };
       if (patient?._id) {
-        return api.put(`/patients/${patient._id}`, data);
+        return api.put(`/patients/${patient._id}`, payload);
       }
-      return api.post('/patients', data);
+      return api.post('/patients', payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['patients'] });
@@ -110,7 +118,7 @@ export function PatientModal({
       onClose();
     },
     onError: (err: Error) => {
-      setErrors({ form: err.message });
+      setErrors({ form: formatErrorMessage(err) });
     },
   });
 
@@ -188,6 +196,29 @@ export function PatientModal({
           />
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            label="Contact Telephone"
+            type="tel"
+            placeholder="+1 (555) 019-2834"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          />
+
+          <Select
+            label="Attending Doctor"
+            required
+            options={
+              doctorOptions.length > 0
+                ? doctorOptions
+                : [{ value: '', label: 'Loading doctors...' }]
+            }
+            value={formData.doctor_id}
+            onChange={(e) => setFormData({ ...formData, doctor_id: e.target.value })}
+            error={errors.doctor_id}
+          />
+        </div>
+
         <Input
           label="Clinical Diagnosis / Condition"
           required
@@ -195,19 +226,6 @@ export function PatientModal({
           value={formData.condition}
           onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
           error={errors.condition}
-        />
-
-        <Select
-          label="Attending Doctor"
-          required
-          options={
-            doctorOptions.length > 0
-              ? doctorOptions
-              : [{ value: '', label: 'Loading doctors...' }]
-          }
-          value={formData.doctor_id}
-          onChange={(e) => setFormData({ ...formData, doctor_id: e.target.value })}
-          error={errors.doctor_id}
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

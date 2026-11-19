@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Doctor } from '@/lib/types';
 import { api } from '@/lib/api';
+import { formatErrorMessage } from '@/lib/errorHandler';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
@@ -82,7 +83,7 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
       onClose();
     },
     onError: (err: Error) => {
-      setErrors({ form: err.message });
+      setErrors({ form: formatErrorMessage(err) });
     },
   });
 

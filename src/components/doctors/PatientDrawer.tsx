@@ -4,6 +4,7 @@ import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Doctor, Patient, ApiResponse } from '@/lib/types';
 import { api } from '@/lib/api';
+import { formatErrorMessage } from '@/lib/errorHandler';
 import { Drawer } from '../ui/Drawer';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
@@ -132,7 +133,7 @@ export function PatientDrawer({
         ) : isError ? (
           <ErrorAlert
             title="Failed to load patient caseload"
-            message={error instanceof Error ? error.message : 'Unknown network error'}
+            message={formatErrorMessage(error)}
             onRetry={() => refetch()}
           />
         ) : patients.length === 0 ? (

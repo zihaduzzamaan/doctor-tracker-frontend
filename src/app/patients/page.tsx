@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
+import { formatErrorMessage } from '@/lib/errorHandler';
 import { Patient, ApiResponse } from '@/lib/types';
 import { Search, Plus, BedDouble, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -131,7 +132,7 @@ export default function PatientsPage() {
         {isError && (
           <ErrorAlert
             title="Unable to load inpatient records"
-            message={error instanceof Error ? error.message : 'Network error'}
+            message={formatErrorMessage(error)}
             onRetry={() => refetch()}
           />
         )}

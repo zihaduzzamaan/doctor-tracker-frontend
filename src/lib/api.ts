@@ -1,3 +1,5 @@
+import { formatErrorMessage } from './errorHandler';
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
@@ -19,13 +21,18 @@ export async function apiClient<T>(
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${API_BASE_URL}${cleanEndpoint}`;
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers,
+    });
+  } catch (networkError) {
+    console.error('[API Network Error]:', networkError);
+    throw new Error('Connection failed. Please check your internet and try again.');
+  }
 
   if (response.status === 401 && typeof window !== 'undefined') {
-    // If not already on login page, redirect
     if (!window.location.pathname.includes('/login')) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -36,8 +43,9 @@ export async function apiClient<T>(
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const errorMsg = data.message || `Request failed with status ${response.status}`;
-    throw new Error(errorMsg);
+    const rawMsg = data.message || `Request failed with status ${response.status}`;
+    const userFriendlyMsg = formatErrorMessage(rawMsg);
+    throw new Error(userFriendlyMsg);
   }
 
   return data;

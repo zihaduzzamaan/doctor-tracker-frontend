@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
+import { formatErrorMessage } from '@/lib/errorHandler';
 import { Doctor, ApiResponse } from '@/lib/types';
 import { Search, Plus, Stethoscope, Filter } from 'lucide-react';
 
@@ -132,7 +133,7 @@ export default function DoctorsPage() {
         {isError && (
           <ErrorAlert
             title="Unable to load practitioners"
-            message={error instanceof Error ? error.message : 'Network error'}
+            message={formatErrorMessage(error)}
             onRetry={() => refetch()}
           />
         )}

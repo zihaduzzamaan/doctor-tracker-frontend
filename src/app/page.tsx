@@ -13,6 +13,7 @@ import { PatientModal } from '@/components/patients/PatientModal';
 import { Button } from '@/components/ui/Button';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
+import { formatErrorMessage } from '@/lib/errorHandler';
 import { AnalyticsSummary, ApiResponse } from '@/lib/types';
 import {
   Users,
@@ -97,7 +98,7 @@ export default function DashboardPage() {
         {isError && (
           <ErrorAlert
             title="Failed to fetch clinical analytics"
-            message={error instanceof Error ? error.message : 'Network error'}
+            message={formatErrorMessage(error)}
             onRetry={() => refetch()}
           />
         )}
