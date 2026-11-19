@@ -11,7 +11,7 @@ import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { EmptyState } from '../ui/EmptyState';
 import { ErrorAlert } from '../ui/ErrorAlert';
-import { User, Calendar, CheckCircle2, UserPlus, Stethoscope, AlertCircle } from 'lucide-react';
+import { User, Calendar, CheckCircle2, UserPlus, Stethoscope, AlertCircle, Trash2 } from 'lucide-react';
 
 export interface PatientDrawerProps {
   doctor: Doctor | null;
@@ -44,6 +44,16 @@ export function PatientDrawer({
   const dischargeMutation = useMutation({
     mutationFn: (patientId: string) =>
       api.put(`/patients/${patientId}`, { status: 'discharged' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+      queryClient.invalidateQueries({ queryKey: ['doctors'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (patientId: string) =>
+      api.delete(`/patients/${patientId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['patients'] });
       queryClient.invalidateQueries({ queryKey: ['doctors'] });
@@ -191,18 +201,32 @@ export function PatientDrawer({
                       </span>
                     </div>
 
-                    {!isDischarged && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="py-1 px-2.5 text-xs text-slate-700 hover:text-clinical-700 hover:border-clinical-300"
-                        isLoading={dischargeMutation.isPending}
-                        onClick={() => dischargeMutation.mutate(patient._id)}
-                        leftIcon={<CheckCircle2 className="w-3.5 h-3.5" />}
+                    <div className="flex items-center gap-1.5">
+                      {!isDischarged && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="py-1 px-2.5 text-xs text-slate-700 hover:text-clinical-700 hover:border-clinical-300"
+                          isLoading={dischargeMutation.isPending}
+                          onClick={() => dischargeMutation.mutate(patient._id)}
+                          leftIcon={<CheckCircle2 className="w-3.5 h-3.5" />}
+                        >
+                          Discharge
+                        </Button>
+                      )}
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Are you sure you want to delete patient record for ${patient.patient_name}?`)) {
+                            deleteMutation.mutate(patient._id);
+                          }
+                        }}
+                        disabled={deleteMutation.isPending}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition focus-ring"
+                        title="Delete Patient Record"
                       >
-                        Discharge
-                      </Button>
-                    )}
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

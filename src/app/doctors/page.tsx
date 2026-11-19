@@ -40,6 +40,8 @@ export default function DoctorsPage() {
   const [search, setSearch] = useState('');
   const [specialization, setSpecialization] = useState('');
   const [hospital, setHospital] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // Modals and Drawer state
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
@@ -49,14 +51,16 @@ export default function DoctorsPage() {
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
   const [targetDoctorId, setTargetDoctorId] = useState<string | null>(null);
 
-  // Fetch doctors with filters
+  // Fetch doctors with filters (including date-wise)
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['doctors', search, specialization, hospital],
+    queryKey: ['doctors', search, specialization, hospital, startDate, endDate],
     queryFn: () => {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (specialization) params.append('specialization', specialization);
       if (hospital) params.append('hospital', hospital);
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
       params.append('limit', '50');
       return api.get<ApiResponse<Doctor[]>>(`/doctors?${params.toString()}`);
     },
@@ -107,26 +111,66 @@ export default function DoctorsPage() {
           </Button>
         </div>
 
-        {/* Filter Toolbar */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-subtle grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Input
-            placeholder="Search by doctor name..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            leftIcon={<Search className="w-4 h-4" />}
-          />
+        {/* Filter Toolbar with Search, Department, Hospital & Date-wise Filter */}
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-subtle space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Input
+              placeholder="Search by doctor name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              leftIcon={<Search className="w-4 h-4" />}
+            />
 
-          <Select
-            options={SPECIALIZATIONS}
-            value={specialization}
-            onChange={(e) => setSpecialization(e.target.value)}
-          />
+            <Select
+              options={SPECIALIZATIONS}
+              value={specialization}
+              onChange={(e) => setSpecialization(e.target.value)}
+            />
 
-          <Select
-            options={HOSPITALS}
-            value={hospital}
-            onChange={(e) => setHospital(e.target.value)}
-          />
+            <Select
+              options={HOSPITALS}
+              value={hospital}
+              onChange={(e) => setHospital(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+              <span className="font-semibold text-slate-600">Registered Date Range:</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-clinical-600"
+                  title="Registered Start Date"
+                />
+                <span className="text-slate-400">to</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-clinical-600"
+                  title="Registered End Date"
+                />
+              </div>
+            </div>
+
+            {(search || specialization || hospital || startDate || endDate) && (
+              <button
+                onClick={() => {
+                  setSearch('');
+                  setSpecialization('');
+                  setHospital('');
+                  setStartDate('');
+                  setEndDate('');
+                }}
+                className="text-xs font-semibold text-rose-600 hover:text-rose-700 underline self-start sm:self-auto"
+              >
+                Clear All Filters
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Error State */}

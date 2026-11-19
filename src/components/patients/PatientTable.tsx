@@ -4,13 +4,14 @@ import React from 'react';
 import { Patient, Doctor } from '@/lib/types';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
-import { Calendar, User, Stethoscope, CheckCircle2, MoreVertical, Edit2 } from 'lucide-react';
+import { Calendar, User, Stethoscope, CheckCircle2, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 
 export interface PatientTableProps {
   patients: Patient[];
   isLoading?: boolean;
   onDischarge: (patientId: string) => void;
   onEdit?: (patient: Patient) => void;
+  onDelete?: (patientId: string) => void;
 }
 
 export function PatientTable({
@@ -18,6 +19,7 @@ export function PatientTable({
   isLoading,
   onDischarge,
   onEdit,
+  onDelete,
 }: PatientTableProps) {
   if (isLoading) {
     return <PatientTableSkeleton />;
@@ -105,6 +107,15 @@ export function PatientTable({
                         <Edit2 className="w-4 h-4" />
                       </button>
                     )}
+                    {onDelete && (
+                      <button
+                        onClick={() => onDelete(patient._id)}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition focus-ring"
+                        title="Delete Record"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                     {!isDischarged && (
                       <Button
                         variant="outline"
@@ -188,6 +199,17 @@ export function PatientTable({
                     leftIcon={<CheckCircle2 className="w-3.5 h-3.5" />}
                   >
                     Discharge
+                  </Button>
+                )}
+                {onDelete && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onDelete(patient._id)}
+                    className="py-1 px-3 text-xs text-rose-600 hover:bg-rose-50 border-rose-200"
+                    leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+                  >
+                    Delete
                   </Button>
                 )}
               </div>

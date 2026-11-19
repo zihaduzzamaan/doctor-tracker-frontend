@@ -12,13 +12,16 @@ import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
 import { formatErrorMessage } from '@/lib/errorHandler';
 import { Patient, ApiResponse } from '@/lib/types';
-import { Search, Plus, BedDouble, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, BedDouble, ChevronLeft, ChevronRight, Calendar, X, Filter } from 'lucide-react';
 
 export default function PatientsPage() {
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<string>('');
+  const [condition, setCondition] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [page, setPage] = useState(1);
   const limit = 10;
 
@@ -27,11 +30,14 @@ export default function PatientsPage() {
 
   // Fetch patients
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['patients', search, status, page],
+    queryKey: ['patients', search, status, condition, startDate, endDate, page],
     queryFn: () => {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (status) params.append('status', status);
+      if (condition) params.append('condition', condition);
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
       params.append('page', page.toString());
       params.append('limit', limit.toString());
       return api.get<ApiResponse<Patient[]>>(`/patients?${params.toString()}`);
@@ -41,6 +47,16 @@ export default function PatientsPage() {
   const dischargeMutation = useMutation({
     mutationFn: (patientId: string) =>
       api.put(`/patients/${patientId}`, { status: 'discharged' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+      queryClient.invalidateQueries({ queryKey: ['doctors'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (patientId: string) =>
+      api.delete(`/patients/${patientId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['patients'] });
       queryClient.invalidateQueries({ queryKey: ['doctors'] });
@@ -92,39 +108,101 @@ export default function PatientsPage() {
         </div>
 
         {/* Search & Status Pill Filters */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-subtle flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-          <div className="w-full sm:max-w-xs">
-            <Input
-              placeholder="Search by patient name..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              leftIcon={<Search className="w-4 h-4" />}
-            />
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-subtle space-y-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            <div className="w-full sm:max-w-xs">
+              <Input
+                placeholder="Search by patient name..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                leftIcon={<Search className="w-4 h-4" />}
+              />
+            </div>
+
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              {statusFilters.map((f) => {
+                const active = status === f.value;
+                return (
+                  <button
+                    key={f.value}
+                    onClick={() => {
+                      setStatus(f.value);
+                      setPage(1);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition focus-ring ${
+                      active
+                        ? 'bg-clinical-600 text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-            {statusFilters.map((f) => {
-              const active = status === f.value;
-              return (
-                <button
-                  key={f.value}
-                  onClick={() => {
-                    setStatus(f.value);
-                    setPage(1);
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition focus-ring ${
-                    active
-                      ? 'bg-clinical-600 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              );
-            })}
+          {/* Condition and Date-Wise Filters */}
+          <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-3 text-xs">
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-slate-500">Condition:</span>
+              <Input
+                placeholder="e.g. Cardiology, Hypertension"
+                value={condition}
+                onChange={(e) => {
+                  setCondition(e.target.value);
+                  setPage(1);
+                }}
+                className="w-48 text-xs py-1.5"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-slate-500">Admission Date:</span>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-clinical-500"
+                title="Start Date"
+              />
+              <span className="text-slate-400">to</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  setPage(1);
+                }}
+                className="border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-clinical-500"
+                title="End Date"
+              />
+            </div>
+
+            {(search || status || condition || startDate || endDate) && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSearch('');
+                  setStatus('');
+                  setCondition('');
+                  setStartDate('');
+                  setEndDate('');
+                  setPage(1);
+                }}
+                className="ml-auto py-1 px-2.5 text-xs text-slate-500 hover:text-slate-800"
+                leftIcon={<X className="w-3.5 h-3.5" />}
+              >
+                Clear Filters
+              </Button>
+            )}
           </div>
         </div>
 
@@ -149,6 +227,10 @@ export default function PatientsPage() {
             onAction={() => {
               setSearch('');
               setStatus('');
+              setCondition('');
+              setStartDate('');
+              setEndDate('');
+              setPage(1);
             }}
           />
         ) : (
@@ -157,6 +239,11 @@ export default function PatientsPage() {
               patients={patients}
               onDischarge={(id) => dischargeMutation.mutate(id)}
               onEdit={handleEdit}
+              onDelete={(id) => {
+                if (window.confirm('Are you sure you want to delete this patient admission record?')) {
+                  deleteMutation.mutate(id);
+                }
+              }}
             />
 
             {/* Pagination Controls */}
