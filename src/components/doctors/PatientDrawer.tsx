@@ -1,0 +1,214 @@
+'use client';
+
+import React from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Doctor, Patient, ApiResponse } from '@/lib/types';
+import { api } from '@/lib/api';
+import { Drawer } from '../ui/Drawer';
+import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
+import { Skeleton } from '../ui/Skeleton';
+import { EmptyState } from '../ui/EmptyState';
+import { ErrorAlert } from '../ui/ErrorAlert';
+import { User, Calendar, CheckCircle2, UserPlus, Stethoscope, AlertCircle } from 'lucide-react';
+
+export interface PatientDrawerProps {
+  doctor: Doctor | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onOpenAddPatient: (doctorId: string) => void;
+}
+
+export function PatientDrawer({
+  doctor,
+  isOpen,
+  onClose,
+  onOpenAddPatient,
+}: PatientDrawerProps) {
+  const queryClient = useQueryClient();
+
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['patients', 'doctor', doctor?._id],
+    queryFn: () =>
+      api.get<ApiResponse<Patient[]>>(`/patients?doctor_id=${doctor?._id}`),
+    enabled: Boolean(doctor?._id && isOpen),
+  });
+
+  const dischargeMutation = useMutation({
+    mutationFn: (patientId: string) =>
+      api.put(`/patients/${patientId}`, { status: 'discharged' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+      queryClient.invalidateQueries({ queryKey: ['doctors'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+    },
+  });
+
+  if (!doctor) return null;
+
+  const patients = data?.data || [];
+  const activePatients = patients.filter((p) => p.status !== 'discharged');
+
+  return (
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title={doctor.doctor_name}
+      subtitle={`${doctor.specialization} • ${doctor.hospital}`}
+      badge={
+        <Badge variant="clinical" size="sm">
+          {activePatients.length} Active Cases
+        </Badge>
+      }
+      footer={
+        <div className="flex items-center justify-between gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onClose}
+            className="w-1/3"
+          >
+            Close
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            className="w-2/3"
+            leftIcon={<UserPlus className="w-4 h-4" />}
+            onClick={() => {
+              onClose();
+              onOpenAddPatient(doctor._id);
+            }}
+          >
+            Assign Inpatient
+          </Button>
+        </div>
+      }
+    >
+      <div className="space-y-4">
+        {/* Doctor Summary Banner */}
+        <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-clinical-100 text-clinical-700 flex items-center justify-center shrink-0">
+              <Stethoscope className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Department Caseload
+              </p>
+              <p className="text-sm font-bold text-slate-900">
+                {activePatients.length} of {patients.length} total assigned records
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 5-State Coverage */}
+        {isLoading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-slate-200 p-4 space-y-3 bg-white animate-pulse"
+              >
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-5 w-20 rounded-full" />
+                </div>
+                <Skeleton className="h-3 w-2/3" />
+                <div className="pt-2 border-t border-slate-100 flex justify-between">
+                  <Skeleton className="h-3 w-1/4" />
+                  <Skeleton className="h-7 w-24 rounded-lg" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : isError ? (
+          <ErrorAlert
+            title="Failed to load patient caseload"
+            message={error instanceof Error ? error.message : 'Unknown network error'}
+            onRetry={() => refetch()}
+          />
+        ) : patients.length === 0 ? (
+          <EmptyState
+            icon={<User className="w-6 h-6 text-slate-400" />}
+            title="No Assigned Patients"
+            description={`There are currently no patient admissions assigned to ${doctor.doctor_name}.`}
+            actionLabel="Admit First Patient"
+            onAction={() => {
+              onClose();
+              onOpenAddPatient(doctor._id);
+            }}
+          />
+        ) : (
+          <div className="space-y-3">
+            {patients.map((patient) => {
+              const isDischarged = patient.status === 'discharged';
+              return (
+                <div
+                  key={patient._id}
+                  className={`rounded-xl border p-4 transition-all ${
+                    isDischarged
+                      ? 'border-slate-200 bg-slate-50/60 opacity-75'
+                      : 'border-slate-200 bg-white hover:border-clinical-300 shadow-subtle'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">
+                        {patient.patient_name}
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {patient.age} yrs • {patient.gender} • Condition:{' '}
+                        <span className="font-semibold text-slate-700">
+                          {patient.condition}
+                        </span>
+                      </p>
+                    </div>
+                    <Badge variant={patient.status} size="sm" withDot>
+                      {patient.status}
+                    </Badge>
+                  </div>
+
+                  {patient.notes && (
+                    <p className="mt-2 text-xs text-slate-600 bg-slate-50 rounded-lg p-2 border border-slate-100">
+                      {patient.notes}
+                    </p>
+                  )}
+
+                  <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                      <span>
+                        Admitted: {new Date(patient.admission_date).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    {!isDischarged && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="py-1 px-2.5 text-xs text-slate-700 hover:text-clinical-700 hover:border-clinical-300"
+                        isLoading={dischargeMutation.isPending}
+                        onClick={() => dischargeMutation.mutate(patient._id)}
+                        leftIcon={<CheckCircle2 className="w-3.5 h-3.5" />}
+                      >
+                        Discharge
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </Drawer>
+  );
+}

@@ -1,92 +1,182 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import { Activity, Users, UserPlus, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { Navbar } from '@/components/layout/Navbar';
+import { MetricCard, MetricCardSkeleton } from '@/components/analytics/MetricCard';
+import { IntakeChart } from '@/components/analytics/IntakeChart';
+import { ConditionDonut } from '@/components/analytics/ConditionDonut';
+import { DoctorWorkload } from '@/components/analytics/DoctorWorkload';
+import { DoctorModal } from '@/components/doctors/DoctorModal';
+import { PatientModal } from '@/components/patients/PatientModal';
+import { Button } from '@/components/ui/Button';
+import { ErrorAlert } from '@/components/ui/ErrorAlert';
+import { api } from '@/lib/api';
+import { AnalyticsSummary, ApiResponse } from '@/lib/types';
+import {
+  Users,
+  BedDouble,
+  Activity,
+  CheckCircle2,
+  UserPlus,
+  Stethoscope,
+  Plus,
+} from 'lucide-react';
 
-export default function HomePage() {
+export default function DashboardPage() {
+  const router = useRouter();
+  const [isDoctorModalOpen, setIsDoctorModalOpen] = useState(false);
+  const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+      }
+    }
+  }, [router]);
+
+  const {
+    data: summaryData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['analytics', 'summary'],
+    queryFn: () => api.get<ApiResponse<AnalyticsSummary>>('/analytics/summary'),
+  });
+
+  const summary = summaryData?.data;
+
+  // Compute status metrics
+  const activeAdmissions =
+    summary?.statusBreakdown.find((s) => s._id === 'admitted')?.count || 0;
+  const observationCount =
+    summary?.statusBreakdown.find((s) => s._id === 'observation')?.count || 0;
+  const dischargedCount =
+    summary?.statusBreakdown.find((s) => s._id === 'discharged')?.count || 0;
+
   return (
-    <div className="min-h-screen flex flex-col justify-between">
-      <header className="border-b border-slate-200 bg-white sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-teal-600 flex items-center justify-center text-white shadow-sm">
-              <Activity className="w-6 h-6" />
-            </div>
-            <div>
-              <span className="font-bold text-lg text-slate-900 tracking-tight">Doctor Tracker</span>
-              <span className="ml-2 text-xs bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full font-semibold border border-teal-200">
-                Clinic Admin
-              </span>
-            </div>
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      <Navbar />
+
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header & Quick Action Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Clinical Operations Dashboard
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Real-time monitoring of practitioner workloads, inpatient admissions, and diagnostic trends.
+            </p>
           </div>
-          <div className="flex items-center space-x-3">
-            <Link
-              href="/login"
-              className="px-4 py-2 text-sm font-semibold rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition-colors shadow-sm"
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              leftIcon={<Stethoscope className="w-4 h-4 text-clinical-600" />}
+              onClick={() => setIsDoctorModalOpen(true)}
             >
-              Sign In
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
-        <div className="text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight sm:text-5xl">
-            Streamlined Practitioner & Inpatient Tracking
-          </h1>
-          <p className="mt-4 text-lg text-slate-600">
-            A high-performance portal built with Next.js 15, Node.js Express, and MongoDB. Monitor doctor schedules, patient caseloads, and admission analytics in real time.
-          </p>
-          <div className="mt-8 flex justify-center gap-4">
-            <Link
-              href="/login"
-              className="px-6 py-3 rounded-lg bg-teal-600 text-white font-semibold hover:bg-teal-700 transition shadow"
+              Add Doctor
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={<Plus className="w-4 h-4" />}
+              onClick={() => setIsPatientModalOpen(true)}
             >
-              Access Portal
-            </Link>
+              New Admission
+            </Button>
           </div>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <div className="w-10 h-10 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center mb-4">
-              <Users className="w-5 h-5" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900">Practitioner Directory</h3>
-            <p className="mt-2 text-sm text-slate-600">
-              Manage medical doctors across clinic branches with instant full-text search, department filtering, and active patient badges.
-            </p>
-          </div>
+        {isError && (
+          <ErrorAlert
+            title="Failed to fetch clinical analytics"
+            message={error instanceof Error ? error.message : 'Network error'}
+            onRetry={() => refetch()}
+          />
+        )}
 
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
-              <UserPlus className="w-5 h-5" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900">Patient Drawer Workflows</h3>
-            <p className="mt-2 text-sm text-slate-600">
-              Click any doctor to slide open their active caseload, review admission details, or assign new patient records.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900">Enterprise Security</h3>
-            <p className="mt-2 text-sm text-slate-600">
-              JWT session authorization, input sanitization, strict TypeScript typing, and WCAG 2.2 AA accessibility standards.
-            </p>
-          </div>
+        {/* 4 Core Caseload Metric Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {isLoading ? (
+            <>
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+            </>
+          ) : (
+            <>
+              <MetricCard
+                title="Total Doctors"
+                value={summary?.totalDoctors || 0}
+                subtitle="Active registered practitioners"
+                icon={<Users className="w-5 h-5" />}
+                variant="clinical"
+                badgeText="All Departments"
+              />
+              <MetricCard
+                title="Total Patients"
+                value={summary?.totalPatients || 0}
+                subtitle="Cumulative admission cases"
+                icon={<BedDouble className="w-5 h-5" />}
+                variant="clinical"
+                badgeText="Historical Records"
+              />
+              <MetricCard
+                title="Active Inpatients"
+                value={activeAdmissions + observationCount}
+                subtitle={`${activeAdmissions} admitted, ${observationCount} observation`}
+                icon={<Activity className="w-5 h-5" />}
+                variant="accent"
+                badgeText="In Bed"
+              />
+              <MetricCard
+                title="Discharged"
+                value={dischargedCount}
+                subtitle="Completed clinical treatments"
+                icon={<CheckCircle2 className="w-5 h-5" />}
+                variant="slate"
+                badgeText="Resolved"
+              />
+            </>
+          )}
         </div>
+
+        {/* Charts & Visual Analytics Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <IntakeChart
+            data={summary?.intakeTrends || []}
+            isLoading={isLoading}
+          />
+          <ConditionDonut
+            data={summary?.conditionBreakdown || []}
+            isLoading={isLoading}
+          />
+        </div>
+
+        {/* Doctor Workload Ranking */}
+        <DoctorWorkload
+          doctors={summary?.doctorWorkload || []}
+          isLoading={isLoading}
+        />
       </main>
 
-      <footer className="border-t border-slate-200 bg-white py-6">
-        <div className="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-          Doctor Tracker Clinic Management System &bull; Production Ready
-        </div>
-      </footer>
+      {/* Reusable Modals */}
+      <DoctorModal
+        isOpen={isDoctorModalOpen}
+        onClose={() => setIsDoctorModalOpen(false)}
+      />
+      <PatientModal
+        isOpen={isPatientModalOpen}
+        onClose={() => setIsPatientModalOpen(false)}
+      />
     </div>
   );
 }

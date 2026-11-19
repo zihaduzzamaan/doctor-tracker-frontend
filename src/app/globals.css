@@ -5,11 +5,43 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --brand-primary: #0d9488;
+  --brand-secondary: #14b8a6;
+  --accent-primary: #f59e0b;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessible focus ring utility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-clinical-600 focus:ring-offset-2;
+}
+
+/* Pixel-accurate skeleton shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 0%,
+    #e2e8f0 50%,
+    #f1f5f9 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
 }
