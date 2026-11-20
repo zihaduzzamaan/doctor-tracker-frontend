@@ -1,6 +1,6 @@
 # Doctor Tracker: Frontend Client Application
 
-Doctor Tracker Frontend is a responsive, clinical-grade administrative web application built with Next.js 16, React 19, Tailwind CSS, TanStack Query, and Recharts. Designed to provide clinic administrators with a high-performance portal to manage practitioners, track active inpatient caseloads, and monitor diagnostic trends, the client features sub-50ms debounced search, atomic caseload mutations, five-state component coverage, and full WCAG 2.2 Level AA accessibility in both dark and light modes.
+Doctor Tracker Frontend is a responsive, clinical-grade administrative web application built with Next.js 16, React 19, Tailwind CSS, TanStack Query, and Recharts. Designed to provide clinic administrators with a high-performance portal to manage doctors, track active patient caseloads, and monitor diagnostic trends, the client features sub-50ms debounced search, atomic caseload mutations, five-state component coverage, and full WCAG 2.2 Level AA accessibility in both dark and light modes.
 
 ---
 
@@ -73,9 +73,9 @@ Doctor Tracker Frontend follows an event-driven, cache-first client architecture
 ```mermaid
 flowchart LR
     Login["/login<br/>Authentication"] --> Dash["/<br/>Dashboard Overview"]
-    Dash --> Docs["/doctors<br/>Practitioner Directory"]
+    Dash --> Docs["/doctors<br/>Doctors Directory"]
     Docs --> Drawer["Slide-Over<br/>Patient Drawer"]
-    Dash --> Patients["/patients<br/>Inpatient Directory"]
+    Dash --> Patients["/patients<br/>Patients Directory"]
 
     style Login fill:#1E293B,stroke:#0D9488,stroke-width:2px,color:#ffffff
     style Dash fill:#1E293B,stroke:#0284C7,stroke-width:2px,color:#ffffff
@@ -132,19 +132,19 @@ High-resolution visual evidence captured from the production build, demonstratin
 
 ### Desktop Views
 
-| Clinical Dashboard | Medical Practitioners Directory |
+| Dashboard | Doctors Directory |
 | :---: | :---: |
-| ![Clinical Operations Dashboard](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_dashboard.png) | ![Medical Practitioners Directory](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_doctors.png) |
+| ![Dashboard](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_dashboard.png) | ![Doctors Directory](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_doctors.png) |
 
-| Inpatient Management Directory | Clinical Staff Login |
+| Patients Directory | Clinic Staff Login |
 | :---: | :---: |
-| ![Inpatient Management](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_patients.png) | ![Clinical Staff Authentication](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_login.png) |
+| ![Patients Directory](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_patients.png) | ![Clinic Staff Login](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/desktop_login.png) |
 
 ### Mobile Views (375px & 360px Viewports)
 
-| Mobile Inpatient Management | Mobile Slide-Over Drawer | Mobile Navigation Menu |
+| Mobile Patients Directory | Mobile Doctor Patients Drawer | Mobile Navigation Menu |
 | :---: | :---: | :---: |
-| ![Mobile Inpatients](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/mobile_patients.png) | ![Mobile Drawer](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/mobile_drawer.png) | ![Mobile Navigation](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/mobile_nav.png) |
+| ![Mobile Patients Directory](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/mobile_patients.png) | ![Mobile Doctor Patients Drawer](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/mobile_drawer.png) | ![Mobile Navigation Menu](https://raw.githubusercontent.com/zihaduzzamaan/doctor-tracker/main/docs/screenshots/mobile_nav.png) |
 
 ---
 
