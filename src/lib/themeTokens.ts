@@ -95,6 +95,24 @@ export const badgeTokens = {
 } as const;
 
 /**
+ * Reusable Tab and Segmented Control Tokens
+ * Differentiated from primary CTA buttons (which use solid clinical-600 #0D9488 with white text).
+ * Active tabs use a gentle tinted clinical surface (clinical-100 in light mode, clinical-950 in dark mode)
+ * with high-contrast text and border tokens, complying with WCAG 2.2 AAA standard.
+ */
+export const tabTokens = {
+  // Outer Segmented Track
+  track:
+    'p-1 rounded-xl bg-slate-100/80 dark:bg-neutral-900/90 border border-slate-200/80 dark:border-neutral-800 backdrop-blur-xs select-none',
+  // Active Tab Surface Pill
+  activePill:
+    'bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs text-clinical-900 dark:text-clinical-300 font-bold',
+  // Inactive Tab State
+  inactivePill:
+    'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/50 dark:hover:bg-neutral-800/50 font-medium',
+} as const;
+
+/**
  * Reusable Pill Tokens (including navigation pills)
  */
 export const pillTokens = {
@@ -106,9 +124,9 @@ export const pillTokens = {
   under_observation: badgeTokens.under_observation,
   discharged: badgeTokens.discharged,
   navActive:
-    'bg-white dark:bg-neutral-800 text-clinical-700 dark:text-clinical-400 shadow-xs font-bold',
+    'bg-clinical-100 dark:bg-clinical-950/85 text-clinical-900 dark:text-clinical-300 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs font-bold',
   navInactive:
-    'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/50 dark:hover:bg-neutral-800/50',
+    'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/50 dark:hover:bg-neutral-800/50 font-medium',
 } as const;
 
 /**

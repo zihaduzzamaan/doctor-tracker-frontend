@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatedThemeToggler } from '@/registry/magicui/animated-theme-toggler';
@@ -56,6 +56,35 @@ export function Navbar() {
     return pathname.startsWith(href);
   };
 
+  const [navIndicator, setNavIndicator] = useState<{ left: number; width: number; ready: boolean }>({
+    left: 0,
+    width: 0,
+    ready: false,
+  });
+  const navContainerRef = useRef<HTMLElement>(null);
+  const navItemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  useEffect(() => {
+    const updateNavIndicator = () => {
+      const activeIndex = navLinks.findIndex((l) => isActive(l.href));
+      const activeEl = navItemRefs.current[activeIndex >= 0 ? activeIndex : 0];
+      if (activeEl) {
+        setNavIndicator({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+          ready: true,
+        });
+      }
+    };
+
+    const raf = requestAnimationFrame(updateNavIndicator);
+    window.addEventListener('resize', updateNavIndicator);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', updateNavIndicator);
+    };
+  }, [pathname]);
+
   return (
     <header className="sticky top-0 z-40 bg-white dark:bg-[#121212] border-b border-slate-200 dark:border-neutral-800 shadow-subtle transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,25 +103,45 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links: Impeccable Segmented Pill Track */}
+            {/* Desktop Navigation Links: Impeccable Segmented Pill Track with Sliding Indicator */}
             <nav
-              className="hidden md:flex items-center p-1 rounded-xl bg-slate-100/70 dark:bg-neutral-900/80 border border-slate-200/60 dark:border-neutral-800 gap-1 backdrop-blur-xs select-none"
+              ref={navContainerRef}
+              className="relative hidden md:flex items-center p-1 rounded-xl bg-slate-100/70 dark:bg-neutral-900/80 border border-slate-200/60 dark:border-neutral-800 gap-1 backdrop-blur-xs select-none"
               aria-label="Main Navigation"
             >
-              {navLinks.map((link) => {
+              {/* Sliding Active Pill Indicator */}
+              {navIndicator.ready && (
+                <span
+                  aria-hidden="true"
+                  className="absolute top-1 bottom-1 rounded-lg bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  style={{
+                    left: `${navIndicator.left}px`,
+                    width: `${navIndicator.width}px`,
+                  }}
+                />
+              )}
+
+              {navLinks.map((link, idx) => {
                 const Icon = link.icon;
                 const active = isActive(link.href);
                 return (
                   <Link
                     key={link.href}
+                    ref={(el) => {
+                      navItemRefs.current[idx] = el;
+                    }}
                     href={link.href}
-                    className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold select-none transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
-                      active ? pillTokens.navActive : pillTokens.navInactive
+                    className={`relative z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold select-none transition-colors duration-200 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-neutral-900 active:outline-none group ${
+                      active
+                        ? 'text-clinical-900 dark:text-clinical-300 font-bold'
+                        : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/40 dark:hover:bg-neutral-800/40'
                     }`}
                   >
                     <Icon
                       className={`w-3.5 h-3.5 transition-colors duration-200 ${
-                        active ? 'text-clinical-600 dark:text-clinical-400' : 'text-slate-400 dark:text-neutral-500'
+                        active
+                          ? 'text-clinical-700 dark:text-clinical-400'
+                          : 'text-slate-400 dark:text-neutral-500 group-hover:text-slate-700 dark:group-hover:text-neutral-300'
                       }`}
                     />
                     <span>{link.label}</span>
@@ -160,15 +209,17 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold min-h-[48px] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold min-h-[48px] transition-all duration-200 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-neutral-900 active:outline-none group ${
                     active
-                      ? 'bg-clinical-50 dark:bg-neutral-800 text-clinical-700 dark:text-clinical-400 font-bold'
+                      ? 'bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 text-clinical-900 dark:text-clinical-300 font-bold'
                       : 'text-slate-700 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800/60'
                   }`}
                 >
                   <Icon
-                    className={`w-5 h-5 ${
-                      active ? 'text-clinical-600 dark:text-clinical-400' : 'text-slate-400 dark:text-neutral-500'
+                    className={`w-5 h-5 transition-colors duration-200 ${
+                      active
+                        ? 'text-clinical-700 dark:text-clinical-400'
+                        : 'text-slate-400 dark:text-neutral-500 group-hover:text-slate-700 dark:group-hover:text-neutral-300'
                     }`}
                   />
                   <span>{link.label}</span>

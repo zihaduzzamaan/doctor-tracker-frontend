@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Navbar } from '@/components/layout/Navbar';
@@ -139,6 +139,40 @@ function PatientsContent() {
     { label: 'Discharged', value: 'discharged' },
   ];
 
+  const [indicatorStyle, setIndicatorStyle] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    ready: boolean;
+  }>({ left: 0, top: 0, width: 0, height: 0, ready: false });
+
+  const tabContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    const updateIndicator = () => {
+      const activeIndex = statusFilters.findIndex((f) => f.value === status);
+      const activeEl = tabRefs.current[activeIndex >= 0 ? activeIndex : 0];
+      if (activeEl) {
+        setIndicatorStyle({
+          left: activeEl.offsetLeft,
+          top: activeEl.offsetTop,
+          width: activeEl.offsetWidth,
+          height: activeEl.offsetHeight,
+          ready: true,
+        });
+      }
+    };
+
+    const raf = requestAnimationFrame(updateIndicator);
+    window.addEventListener('resize', updateIndicator);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', updateIndicator);
+    };
+  }, [status]);
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black flex flex-col transition-colors duration-150">
       <Navbar />
@@ -180,27 +214,45 @@ function PatientsContent() {
               />
             </div>
 
-            {/* Responsive 2x2 on Mobile, Inline on Desktop without Clipping */}
+            {/* Responsive 2x2 on Mobile, Inline on Desktop with Smooth Animated Sliding Pill */}
             <div
-              className="grid grid-cols-2 sm:flex sm:flex-row p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200/80 dark:border-neutral-800 gap-1 w-full sm:w-auto"
+              ref={tabContainerRef}
+              className="relative grid grid-cols-2 sm:flex sm:flex-row p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200/80 dark:border-neutral-800 gap-1 w-full sm:w-auto select-none"
               role="tablist"
               aria-label="Filter patients by clinical status"
             >
-              {statusFilters.map((f) => {
+              {/* Animated Sliding Active Indicator Pill */}
+              {indicatorStyle.ready && (
+                <span
+                  aria-hidden="true"
+                  className="absolute rounded-lg bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  style={{
+                    left: `${indicatorStyle.left}px`,
+                    top: `${indicatorStyle.top}px`,
+                    width: `${indicatorStyle.width}px`,
+                    height: `${indicatorStyle.height}px`,
+                  }}
+                />
+              )}
+
+              {statusFilters.map((f, idx) => {
                 const active = status === f.value;
                 return (
                   <button
                     key={f.value}
+                    ref={(el) => {
+                      tabRefs.current[idx] = el;
+                    }}
                     role="tab"
                     aria-selected={active}
                     onClick={() => {
                       setStatus(f.value);
                       setPage(1);
                     }}
-                    className={`relative px-3 py-2 sm:py-1.5 sm:px-3.5 rounded-lg text-xs font-semibold text-center whitespace-nowrap select-none transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
+                    className={`relative z-10 px-3 py-2 sm:py-1.5 sm:px-3.5 rounded-lg text-xs font-semibold text-center whitespace-nowrap select-none transition-colors duration-200 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-neutral-900 active:outline-none ${
                       active
-                        ? 'bg-clinical-600 text-white shadow-xs font-bold scale-[1.02]'
-                        : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-neutral-800/60'
+                        ? 'text-clinical-900 dark:text-clinical-300 font-bold'
+                        : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/40 dark:hover:bg-neutral-800/40'
                     }`}
                   >
                     {f.label}
