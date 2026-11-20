@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { Navbar } from '@/components/layout/Navbar';
 import { PatientTable, PatientTableSkeleton } from '@/components/patients/PatientTable';
 import { PatientModal } from '@/components/patients/PatientModal';
@@ -15,6 +15,9 @@ import { formatErrorMessage } from '@/lib/errorHandler';
 import { Patient, ApiResponse } from '@/lib/types';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Search, Plus, BedDouble, ChevronLeft, ChevronRight, X } from 'lucide-react';
+
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
 function PatientsContent() {
   const router = useRouter();
@@ -43,8 +46,8 @@ function PatientsContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
 
-  // Fetch patients
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  // Fetch patients with stable placeholder data to eliminate layout shifts
+  const { data, isPending, isFetching, isError, error, refetch } = useQuery({
     queryKey: ['patients', debouncedSearch, status, debouncedCondition, startDate, endDate, page],
     queryFn: ({ signal }) => {
       const params = new URLSearchParams();
@@ -57,6 +60,7 @@ function PatientsContent() {
       params.append('limit', limit.toString());
       return api.get<ApiResponse<Patient[]>>(`/patients?${params.toString()}`, { signal });
     },
+    placeholderData: keepPreviousData,
   });
 
   const patients = data?.data || [];
@@ -150,7 +154,7 @@ function PatientsContent() {
   const tabContainerRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const updateIndicator = () => {
       const activeIndex = statusFilters.findIndex((f) => f.value === status);
       const activeEl = tabRefs.current[activeIndex >= 0 ? activeIndex : 0];
@@ -165,10 +169,9 @@ function PatientsContent() {
       }
     };
 
-    const raf = requestAnimationFrame(updateIndicator);
+    updateIndicator();
     window.addEventListener('resize', updateIndicator);
     return () => {
-      cancelAnimationFrame(raf);
       window.removeEventListener('resize', updateIndicator);
     };
   }, [status]);
@@ -214,26 +217,25 @@ function PatientsContent() {
               />
             </div>
 
-            {/* Responsive 2x2 on Mobile, Inline on Desktop with Smooth Animated Sliding Pill */}
+            {/* Responsive 2x2 on Mobile, Inline on Desktop with Zero-CLS Sliding Indicator */}
             <div
               ref={tabContainerRef}
-              className="relative grid grid-cols-2 sm:flex sm:flex-row p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200/80 dark:border-neutral-800 gap-1 w-full sm:w-auto select-none"
+              className="relative grid grid-cols-2 sm:flex sm:flex-row p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200/80 dark:border-neutral-800 gap-1 w-full sm:w-auto select-none sm:h-10 sm:items-center"
               role="tablist"
               aria-label="Filter patients by clinical status"
             >
-              {/* Animated Sliding Active Indicator Pill */}
-              {indicatorStyle.ready && (
-                <span
-                  aria-hidden="true"
-                  className="absolute rounded-lg bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                  style={{
-                    left: `${indicatorStyle.left}px`,
-                    top: `${indicatorStyle.top}px`,
-                    width: `${indicatorStyle.width}px`,
-                    height: `${indicatorStyle.height}px`,
-                  }}
-                />
-              )}
+              {/* Sliding Active Pill Indicator (Compositor translate3d) */}
+              <span
+                aria-hidden="true"
+                className={`absolute top-0 left-0 rounded-lg bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform ${
+                  indicatorStyle.ready ? 'opacity-100' : 'opacity-0'
+                }`}
+                style={{
+                  transform: `translate3d(${indicatorStyle.left}px, ${indicatorStyle.top}px, 0)`,
+                  width: `${indicatorStyle.width}px`,
+                  height: `${indicatorStyle.height}px`,
+                }}
+              />
 
               {statusFilters.map((f, idx) => {
                 const active = status === f.value;
@@ -249,9 +251,9 @@ function PatientsContent() {
                       setStatus(f.value);
                       setPage(1);
                     }}
-                    className={`relative z-10 px-3 py-2 sm:py-1.5 sm:px-3.5 rounded-lg text-xs font-semibold text-center whitespace-nowrap select-none transition-colors duration-200 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-neutral-900 active:outline-none ${
+                    className={`relative z-10 px-3.5 h-9 sm:h-8 rounded-lg text-xs font-semibold text-center whitespace-nowrap select-none transition-colors duration-200 flex items-center justify-center focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-neutral-900 active:outline-none ${
                       active
-                        ? 'text-clinical-900 dark:text-clinical-300 font-bold'
+                        ? 'text-clinical-900 dark:text-clinical-300'
                         : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/40 dark:hover:bg-neutral-800/40'
                     }`}
                   >
@@ -334,66 +336,68 @@ function PatientsContent() {
           />
         )}
 
-        {/* 5-State Patient Table */}
-        {isLoading ? (
-          <PatientTableSkeleton />
-        ) : patients.length === 0 ? (
-          <EmptyState
-            icon={<BedDouble className="w-6 h-6 text-slate-400 dark:text-neutral-500" />}
-            title="No Inpatient Records"
-            description="No admissions match your search filter or active category."
-            actionLabel="Reset Search"
-            onAction={() => {
-              setSearch('');
-              setStatus('');
-              setCondition('');
-              setStartDate('');
-              setEndDate('');
-              setPage(1);
-            }}
-          />
-        ) : (
-          <div className="space-y-4">
-            <PatientTable
-              patients={patients}
-              onDischarge={(id) => dischargeMutation.mutate(id)}
-              onEdit={handleEdit}
-              onDelete={(id) => {
-                if (window.confirm('Are you sure you want to delete this patient admission record?')) {
-                  deleteMutation.mutate(id);
-                }
+        {/* 5-State Patient Table with Min-Height to eliminate scrollbar jump */}
+        <div className="min-h-[520px]">
+          {isPending ? (
+            <PatientTableSkeleton />
+          ) : patients.length === 0 ? (
+            <EmptyState
+              icon={<BedDouble className="w-6 h-6 text-slate-400 dark:text-neutral-500" />}
+              title="No Inpatient Records"
+              description="No admissions match your search filter or active category."
+              actionLabel="Reset Search"
+              onAction={() => {
+                setSearch('');
+                setStatus('');
+                setCondition('');
+                setStartDate('');
+                setEndDate('');
+                setPage(1);
               }}
             />
+          ) : (
+            <div className={`space-y-4 transition-opacity duration-200 ${isFetching ? 'opacity-75' : 'opacity-100'}`}>
+              <PatientTable
+                patients={patients}
+                onDischarge={(id) => dischargeMutation.mutate(id)}
+                onEdit={handleEdit}
+                onDelete={(id) => {
+                  if (window.confirm('Are you sure you want to delete this patient admission record?')) {
+                    deleteMutation.mutate(id);
+                  }
+                }}
+              />
 
-            {/* Pagination Controls */}
-            <div className="flex items-center justify-between px-2 pt-2 text-xs text-slate-500 dark:text-neutral-400">
-              <span>
-                Showing {patients.length} of {pagination.total} records (Page {page} of{' '}
-                {pagination.totalPages})
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page <= 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  leftIcon={<ChevronLeft className="w-4 h-4" />}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page >= pagination.totalPages}
-                  onClick={() => setPage((p) => p + 1)}
-                  rightIcon={<ChevronRight className="w-4 h-4" />}
-                >
-                  Next
-                </Button>
+              {/* Pagination Controls */}
+              <div className="flex items-center justify-between px-2 pt-2 text-xs text-slate-500 dark:text-neutral-400">
+                <span>
+                  Showing {patients.length} of {pagination.total} records (Page {page} of{' '}
+                  {pagination.totalPages})
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    leftIcon={<ChevronLeft className="w-4 h-4" />}
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page >= pagination.totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                    rightIcon={<ChevronRight className="w-4 h-4" />}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
 
       {/* Admission Modal */}

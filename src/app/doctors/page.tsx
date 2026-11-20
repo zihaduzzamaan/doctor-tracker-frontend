@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { Navbar } from '@/components/layout/Navbar';
 import { DoctorCard, DoctorCardSkeleton } from '@/components/doctors/DoctorCard';
 import { PatientDrawer } from '@/components/doctors/PatientDrawer';
@@ -66,8 +66,8 @@ function DoctorsContent() {
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
   const [targetDoctorId, setTargetDoctorId] = useState<string | null>(null);
 
-  // Fetch doctors with filters (including date-wise)
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  // Fetch doctors with filters (including date-wise) and stable placeholder data
+  const { data, isPending, isFetching, isError, error, refetch } = useQuery({
     queryKey: ['doctors', debouncedSearch, specialization, hospital, startDate, endDate],
     queryFn: ({ signal }) => {
       const params = new URLSearchParams();
@@ -79,6 +79,7 @@ function DoctorsContent() {
       params.append('limit', '50');
       return api.get<ApiResponse<Doctor[]>>(`/doctors?${params.toString()}`, { signal });
     },
+    placeholderData: keepPreviousData,
   });
 
   const doctors = data?.data || [];
@@ -288,37 +289,39 @@ function DoctorsContent() {
           />
         )}
 
-        {/* 5-State Doctor Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <DoctorCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : doctors.length === 0 ? (
-          <EmptyState
-            icon={<Stethoscope className="w-6 h-6 text-slate-400 dark:text-neutral-500" />}
-            title="No Practitioners Found"
-            description="No medical doctors match your current search criteria or department filter."
-            actionLabel="Reset Search Filters"
-            onAction={() => {
-              setSearch('');
-              setSpecialization('');
-              setHospital('');
-            }}
-          />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {doctors.map((doctor) => (
-              <DoctorCard
-                key={doctor._id}
-                doctor={doctor}
-                onOpenDrawer={handleOpenDrawer}
-                onEdit={handleEditDoctor}
-              />
-            ))}
-          </div>
-        )}
+        {/* 5-State Doctor Grid with Min-Height to eliminate scrollbar jump */}
+        <div className="min-h-[520px]">
+          {isPending ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <DoctorCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : doctors.length === 0 ? (
+            <EmptyState
+              icon={<Stethoscope className="w-6 h-6 text-slate-400 dark:text-neutral-500" />}
+              title="No Practitioners Found"
+              description="No medical doctors match your current search criteria or department filter."
+              actionLabel="Reset Search Filters"
+              onAction={() => {
+                setSearch('');
+                setSpecialization('');
+                setHospital('');
+              }}
+            />
+          ) : (
+            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-200 ${isFetching ? 'opacity-75' : 'opacity-100'}`}>
+              {doctors.map((doctor) => (
+                <DoctorCard
+                  key={doctor._id}
+                  doctor={doctor}
+                  onOpenDrawer={handleOpenDrawer}
+                  onEdit={handleEditDoctor}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </main>
 
       {/* Slide-over Patient Drawer */}

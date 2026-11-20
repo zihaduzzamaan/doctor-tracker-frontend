@@ -17,6 +17,9 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -64,7 +67,7 @@ export function Navbar() {
   const navContainerRef = useRef<HTMLElement>(null);
   const navItemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const updateNavIndicator = () => {
       const activeIndex = navLinks.findIndex((l) => isActive(l.href));
       const activeEl = navItemRefs.current[activeIndex >= 0 ? activeIndex : 0];
@@ -77,10 +80,9 @@ export function Navbar() {
       }
     };
 
-    const raf = requestAnimationFrame(updateNavIndicator);
+    updateNavIndicator();
     window.addEventListener('resize', updateNavIndicator);
     return () => {
-      cancelAnimationFrame(raf);
       window.removeEventListener('resize', updateNavIndicator);
     };
   }, [pathname]);
@@ -103,23 +105,23 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links: Impeccable Segmented Pill Track with Sliding Indicator */}
+            {/* Desktop Navigation Links: Impeccable Segmented Pill Track with Zero-CLS Sliding Indicator */}
             <nav
               ref={navContainerRef}
-              className="relative hidden md:flex items-center p-1 rounded-xl bg-slate-100/70 dark:bg-neutral-900/80 border border-slate-200/60 dark:border-neutral-800 gap-1 backdrop-blur-xs select-none"
+              className="relative hidden md:flex items-center h-10 p-1 rounded-xl bg-slate-100/70 dark:bg-neutral-900/80 border border-slate-200/60 dark:border-neutral-800 gap-1 backdrop-blur-xs select-none"
               aria-label="Main Navigation"
             >
-              {/* Sliding Active Pill Indicator */}
-              {navIndicator.ready && (
-                <span
-                  aria-hidden="true"
-                  className="absolute top-1 bottom-1 rounded-lg bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                  style={{
-                    left: `${navIndicator.left}px`,
-                    width: `${navIndicator.width}px`,
-                  }}
-                />
-              )}
+              {/* Sliding Active Pill Indicator (Compositor translate3d) */}
+              <span
+                aria-hidden="true"
+                className={`absolute top-1 bottom-1 left-0 rounded-lg bg-clinical-100 dark:bg-clinical-950/85 border border-clinical-300/80 dark:border-clinical-800/70 shadow-xs pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform ${
+                  navIndicator.ready ? 'opacity-100' : 'opacity-0'
+                }`}
+                style={{
+                  transform: `translate3d(${navIndicator.left}px, 0, 0)`,
+                  width: `${navIndicator.width}px`,
+                }}
+              />
 
               {navLinks.map((link, idx) => {
                 const Icon = link.icon;
@@ -131,9 +133,9 @@ export function Navbar() {
                       navItemRefs.current[idx] = el;
                     }}
                     href={link.href}
-                    className={`relative z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold select-none transition-colors duration-200 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-neutral-900 active:outline-none group ${
+                    className={`relative z-10 flex items-center justify-center gap-2 px-3.5 h-8 rounded-lg text-xs font-semibold select-none transition-colors duration-200 focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500/50 focus-visible:ring-offset-1 dark:focus-visible:ring-offset-neutral-900 active:outline-none group ${
                       active
-                        ? 'text-clinical-900 dark:text-clinical-300 font-bold'
+                        ? 'text-clinical-900 dark:text-clinical-300'
                         : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/40 dark:hover:bg-neutral-800/40'
                     }`}
                   >
