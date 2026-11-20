@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { iconContainerTokens, pillTokens } from '@/lib/themeTokens';
 
 export interface MetricCardProps {
   title: string;
@@ -19,14 +20,12 @@ export function MetricCard({
   variant = 'clinical',
   badgeText,
 }: MetricCardProps) {
-  const iconVariantStyles = {
-    clinical:
-      'bg-clinical-50 dark:bg-clinical-950/40 text-clinical-600 dark:text-clinical-400 border border-clinical-200 dark:border-clinical-800/80',
-    accent:
-      'bg-accent-50 dark:bg-amber-950/40 text-accent-700 dark:text-amber-400 border border-accent-200 dark:border-amber-800/80',
-    slate:
-      'bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 border border-slate-200 dark:border-neutral-700',
-  };
+  const pillStyle =
+    variant === 'accent'
+      ? pillTokens.accent.badge
+      : variant === 'slate'
+      ? pillTokens.neutral.badge
+      : pillTokens.clinical.badge;
 
   return (
     <div className="bg-white dark:bg-[#121212] rounded-xl border border-slate-200 dark:border-neutral-800 p-5 sm:p-6 shadow-subtle hover:shadow-card transition flex flex-col justify-between min-h-[145px]">
@@ -40,7 +39,7 @@ export function MetricCard({
           </p>
         </div>
         <div
-          className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${iconVariantStyles[variant]}`}
+          className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${iconContainerTokens[variant]}`}
         >
           {icon}
         </div>
@@ -50,7 +49,9 @@ export function MetricCard({
           {subtitle || 'Real-time clinic metric'}
         </span>
         {badgeText && (
-          <span className="shrink-0 whitespace-nowrap font-semibold text-clinical-700 dark:text-clinical-300 bg-clinical-50 dark:bg-clinical-950/40 px-2 py-0.5 rounded-full border border-clinical-200/80 dark:border-clinical-800/80 text-[11px] leading-tight">
+          <span
+            className={`shrink-0 whitespace-nowrap text-[11px] px-2 py-0.5 rounded-full leading-tight select-none ${pillStyle}`}
+          >
             {badgeText}
           </span>
         )}

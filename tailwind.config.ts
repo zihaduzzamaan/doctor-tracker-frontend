@@ -35,6 +35,7 @@ const config: Config = {
           700: '#0f766e',
           800: '#115e59',
           900: '#134e4a',
+          950: '#042f2e',
         },
         // Accent 10%: Clinical Accent / Amber scale (triage alerts, attention pills, status warnings)
         accent: {
@@ -48,6 +49,7 @@ const config: Config = {
           700: '#b45309',
           800: '#92400e',
           900: '#78350f',
+          950: '#451a03',
         },
       },
       fontFamily: {

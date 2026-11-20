@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatedThemeToggler } from '@/registry/magicui/animated-theme-toggler';
+import { pillTokens } from '@/lib/themeTokens';
 import {
   Activity,
   Users,
@@ -84,9 +85,7 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all focus-ring ${
-                      active
-                        ? 'bg-clinical-50 dark:bg-clinical-950/40 text-clinical-700 dark:text-clinical-300 border border-clinical-200/80 dark:border-clinical-800/80 shadow-subtle'
-                        : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-800/60'
+                      active ? pillTokens.navActive : pillTokens.navInactive
                     }`}
                   >
                     <Icon
@@ -153,7 +152,7 @@ export function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold min-h-[48px] transition ${
                     active
-                      ? 'bg-clinical-50 dark:bg-clinical-950/40 text-clinical-700 dark:text-clinical-300 border border-clinical-200 dark:border-clinical-800/80 font-bold'
+                      ? `${pillTokens.navActive} font-bold`
                       : 'text-slate-700 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800'
                   }`}
                 >

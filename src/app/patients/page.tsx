@@ -153,9 +153,9 @@ export default function PatientsPage() {
                       setStatus(f.value);
                       setPage(1);
                     }}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-clinical-500 ${
                       active
-                        ? 'bg-clinical-600 text-white shadow-sm font-bold'
+                        ? 'bg-clinical-600 text-white shadow-sm font-bold ring-1 ring-inset ring-clinical-500'
                         : 'text-slate-600 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-neutral-800'
                     }`}
                   >

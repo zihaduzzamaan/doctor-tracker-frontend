@@ -96,7 +96,18 @@ export function IntakeChart({ data, isLoading }: IntakeChartProps) {
                 axisLine={false}
                 allowDecimals={false}
               />
-              <Tooltip cursor={{ fill: 'rgba(113, 113, 122, 0.1)' }} content={<CustomBarTooltip />} />
+              <Tooltip
+                cursor={{ fill: 'rgba(113, 113, 122, 0.1)' }}
+                content={<CustomBarTooltip />}
+                contentStyle={{
+                  backgroundColor: '#18181b',
+                  borderColor: '#262626',
+                  borderRadius: '8px',
+                  color: '#ffffff',
+                }}
+                itemStyle={{ color: '#2dd4bf', fontWeight: 600 }}
+                labelStyle={{ color: '#ffffff', fontWeight: 600 }}
+              />
               <Bar dataKey="admissions" fill="#0D9488" radius={[4, 4, 0, 0]} maxBarSize={40} />
             </BarChart>
           </ResponsiveContainer>

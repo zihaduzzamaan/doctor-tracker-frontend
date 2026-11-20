@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, User } from 'lucide-react';
+import { pillTokens, iconContainerTokens } from '@/lib/themeTokens';
 
 export interface DoctorWorkloadProps {
   doctors: Array<{
@@ -75,7 +76,7 @@ export function DoctorWorkload({ doctors, isLoading }: DoctorWorkloadProps) {
               return (
                 <div key={doc._id} className="py-3 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-slate-600 dark:text-neutral-300 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 text-slate-600 dark:text-neutral-300 flex items-center justify-center shrink-0">
                       <User className="w-4 h-4 text-clinical-600 dark:text-clinical-400" />
                     </div>
                     <div className="min-w-0">
@@ -87,7 +88,7 @@ export function DoctorWorkload({ doctors, isLoading }: DoctorWorkloadProps) {
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
-                    <div className="w-20 hidden sm:block bg-slate-100 dark:bg-neutral-800 rounded-full h-2 overflow-hidden">
+                    <div className="w-20 hidden sm:block bg-slate-100 dark:bg-neutral-900 rounded-full h-2 overflow-hidden border border-slate-200/50 dark:border-neutral-800">
                       <div
                         className={`h-full rounded-full ${
                           isHeavy ? 'bg-accent-500' : 'bg-clinical-600'
@@ -96,10 +97,8 @@ export function DoctorWorkload({ doctors, isLoading }: DoctorWorkloadProps) {
                       />
                     </div>
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                        isHeavy
-                          ? 'bg-accent-50 dark:bg-amber-950/40 text-accent-800 dark:text-amber-300 border border-accent-200 dark:border-amber-800/60'
-                          : 'bg-clinical-50 dark:bg-clinical-950/40 text-clinical-800 dark:text-clinical-300 border border-clinical-200 dark:border-clinical-800/60'
+                      className={`text-xs px-2 py-0.5 rounded-full select-none shrink-0 ${
+                        isHeavy ? pillTokens.accent.badge : pillTokens.clinical.badge
                       }`}
                     >
                       {count} {count === 1 ? 'patient' : 'patients'}

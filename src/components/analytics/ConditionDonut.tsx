@@ -17,24 +17,25 @@ const PALETTE = [
   '#71717A', // zinc-500 neutral
 ];
 
-interface TooltipPayload {
-  name: string;
-  value: number;
-}
-
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: Array<{ payload: TooltipPayload }>;
+  payload?: Array<{
+    name?: string;
+    value?: number;
+    payload?: { name: string; value: number };
+  }>;
 }
 
 function CustomDonutTooltip({ active, payload }: CustomTooltipProps) {
   if (active && payload && payload.length) {
-    const item = payload[0].payload;
+    const item = payload[0];
+    const name = item.name || item.payload?.name || 'Diagnosis';
+    const value = item.value !== undefined ? item.value : item.payload?.value || 0;
     return (
-      <div className="bg-[#121212] dark:bg-black border border-neutral-700 dark:border-neutral-800 px-3 py-2 rounded-lg shadow-xl text-xs z-50">
-        <p className="font-semibold text-white">{item.name}</p>
-        <p className="text-clinical-400 font-bold mt-0.5 text-sm">
-          {item.value} <span className="text-xs font-normal text-neutral-400">cases</span>
+      <div className="bg-neutral-900 dark:bg-black border border-neutral-700 dark:border-neutral-800 px-3 py-2 rounded-lg shadow-xl text-xs z-50 pointer-events-none">
+        <p className="font-bold text-white tracking-wide">{name}</p>
+        <p className="text-clinical-400 font-extrabold mt-0.5 text-sm">
+          {value} <span className="text-xs font-normal text-neutral-300">cases</span>
         </p>
       </div>
     );
@@ -83,7 +84,7 @@ export function ConditionDonut({ data, isLoading }: ConditionDonutProps) {
             No diagnostic data available
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={chartData}
@@ -102,7 +103,17 @@ export function ConditionDonut({ data, isLoading }: ConditionDonutProps) {
                   />
                 ))}
               </Pie>
-              <Tooltip content={<CustomDonutTooltip />} />
+              <Tooltip
+                content={<CustomDonutTooltip />}
+                contentStyle={{
+                  backgroundColor: '#18181b',
+                  borderColor: '#262626',
+                  borderRadius: '8px',
+                  color: '#ffffff',
+                }}
+                itemStyle={{ color: '#2dd4bf', fontWeight: 600 }}
+                labelStyle={{ color: '#ffffff', fontWeight: 600 }}
+              />
             </PieChart>
           </ResponsiveContainer>
         )}

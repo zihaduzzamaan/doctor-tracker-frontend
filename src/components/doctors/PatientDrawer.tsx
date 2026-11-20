@@ -11,6 +11,7 @@ import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { EmptyState } from '../ui/EmptyState';
 import { ErrorAlert } from '../ui/ErrorAlert';
+import { iconContainerTokens } from '@/lib/themeTokens';
 import { User, Calendar, CheckCircle2, UserPlus, Stethoscope, Trash2 } from 'lucide-react';
 
 export interface PatientDrawerProps {
@@ -122,7 +123,9 @@ export function PatientDrawer({
         {/* Doctor Summary Banner */}
         <div className="rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-clinical-100 dark:bg-clinical-950/60 text-clinical-700 dark:text-clinical-400 flex items-center justify-center shrink-0">
+            <div
+              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${iconContainerTokens.clinical}`}
+            >
               <Stethoscope className="w-5 h-5" />
             </div>
             <div>

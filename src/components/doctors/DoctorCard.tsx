@@ -5,6 +5,7 @@ import { Doctor } from '@/lib/types';
 import { User, Building2, Stethoscope, ChevronRight, Mail, Phone } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { iconContainerTokens } from '@/lib/themeTokens';
 
 export interface DoctorCardProps {
   doctor: Doctor;
@@ -20,7 +21,9 @@ export function DoctorCard({ doctor, onOpenDrawer, onEdit }: DoctorCardProps) {
       <div>
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-clinical-50 dark:bg-clinical-950/40 border border-clinical-200 dark:border-clinical-800/80 text-clinical-700 dark:text-clinical-400 flex items-center justify-center font-bold text-base shrink-0 group-hover:bg-clinical-100 dark:group-hover:bg-clinical-900/40 transition">
+            <div
+              className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shrink-0 transition ${iconContainerTokens.clinical}`}
+            >
               <User className="w-6 h-6" />
             </div>
             <div>
