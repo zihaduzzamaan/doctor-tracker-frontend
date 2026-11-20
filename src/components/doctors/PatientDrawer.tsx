@@ -93,7 +93,7 @@ export function PatientDrawer({
       subtitle={`${doctor.specialization} • ${doctor.hospital}`}
       badge={
         <Badge variant="clinical" size="sm">
-          {activePatients.length} Active Cases
+          {activePatients.length} Active Patients
         </Badge>
       }
       footer={
@@ -116,7 +116,7 @@ export function PatientDrawer({
               onOpenAddPatient(doctor._id);
             }}
           >
-            Assign Inpatient
+            Assign Patient
           </Button>
         </div>
       }
@@ -262,7 +262,7 @@ export function PatientDrawer({
           }
         }}
         title="Delete Patient Record"
-        message={`Are you sure you want to permanently delete the clinical record for ${patientToDelete?.patient_name}? This action cannot be undone.`}
+        message={`Are you sure you want to permanently delete the patient record for ${patientToDelete?.patient_name}? This action cannot be undone.`}
         confirmText="Delete Record"
         cancelText="Cancel"
         variant="danger"

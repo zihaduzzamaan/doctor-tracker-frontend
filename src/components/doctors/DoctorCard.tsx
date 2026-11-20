@@ -73,7 +73,7 @@ export function DoctorCard({ doctor, onOpenDrawer, onEdit }: DoctorCardProps) {
           onClick={() => onOpenDrawer(doctor)}
           rightIcon={<ChevronRight className="w-4 h-4" />}
         >
-          <span>Patient Caseload</span>
+          <span>View Patients</span>
         </Button>
         {onEdit && (
           <Button

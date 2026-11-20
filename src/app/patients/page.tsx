@@ -141,7 +141,7 @@ function PatientsContent() {
   });
 
   const statusFilters = [
-    { label: 'All Inpatients', value: '' },
+    { label: 'All Patients', value: '' },
     { label: 'Admitted', value: 'admitted' },
     { label: 'Observation', value: 'under_observation' },
     { label: 'Discharged', value: 'discharged' },
@@ -185,10 +185,10 @@ function PatientsContent() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-neutral-800">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-neutral-100 tracking-tight">
-              Inpatient Management
+              Patients
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 mt-1">
-              Track clinical admissions, monitor attending doctors, and process patient discharges.
+              View and manage patient records, assigned doctors, and admission status.
             </p>
           </div>
           <Button
@@ -198,7 +198,7 @@ function PatientsContent() {
             onClick={openAdmitModal}
             className="w-full sm:w-auto justify-center"
           >
-            Record Admission
+            Add Patient
           </Button>
         </div>
 
@@ -281,7 +281,7 @@ function PatientsContent() {
                 placeholder="All Statuses"
                 options={statusFilters.map((f) => ({
                   value: f.value,
-                  label: f.label === 'All Inpatients' ? 'All Statuses' : f.label,
+                  label: f.label === 'All Patients' ? 'All Statuses' : f.label,
                 }))}
                 size="md"
               />
@@ -304,7 +304,7 @@ function PatientsContent() {
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
-              <span className="font-semibold text-slate-500 dark:text-neutral-400 shrink-0">Admission Date:</span>
+              <span className="font-semibold text-slate-500 dark:text-neutral-400 shrink-0">Date Admitted:</span>
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <CustomDatePicker
                   value={startDate}
@@ -354,7 +354,7 @@ function PatientsContent() {
         {/* Error State */}
         {isError && (
           <ErrorAlert
-            title="Unable to load inpatient records"
+            title="Unable to load patient records"
             message={formatErrorMessage(error)}
             onRetry={() => refetch()}
           />
@@ -367,8 +367,8 @@ function PatientsContent() {
           ) : patients.length === 0 ? (
             <EmptyState
               icon={<BedDouble className="w-6 h-6 text-slate-400 dark:text-neutral-500" />}
-              title="No Inpatient Records"
-              description="No admissions match your search filter or active category."
+              title="No Patients Found"
+              description="No patients match your search filter or active category."
               actionLabel="Reset Search"
               onAction={() => {
                 setSearch('');
@@ -442,8 +442,8 @@ function PatientsContent() {
             setPatientToDelete(null);
           }
         }}
-        title="Confirm Inpatient Deletion"
-        message={`Are you sure you want to permanently delete the admission record for ${patientToDelete?.patient_name}? This action cannot be undone.`}
+        title="Delete Patient Record"
+        message={`Are you sure you want to permanently delete the patient record for ${patientToDelete?.patient_name}? This action cannot be undone.`}
         confirmText="Delete Record"
         cancelText="Cancel"
         variant="danger"

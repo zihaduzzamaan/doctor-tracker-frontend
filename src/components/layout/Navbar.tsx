@@ -51,7 +51,7 @@ export function Navbar() {
   const navLinks = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/doctors', label: 'Doctors', icon: Users },
-    { href: '/patients', label: 'Inpatients', icon: BedDouble },
+    { href: '/patients', label: 'Patients', icon: BedDouble },
   ];
 
   const isActive = (href: string) => {
@@ -100,7 +100,7 @@ export function Navbar() {
                   Doctor Tracker
                 </span>
                 <span className="text-[11px] font-semibold text-clinical-600 dark:text-clinical-400 tracking-wide">
-                  Clinical Care Portal
+                  Clinic Portal
                 </span>
               </div>
             </Link>

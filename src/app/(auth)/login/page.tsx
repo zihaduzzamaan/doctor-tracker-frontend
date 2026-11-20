@@ -61,7 +61,7 @@ export default function LoginPage() {
           Doctor Tracker Portal
         </h1>
         <p className="mt-1 text-center text-xs sm:text-sm text-slate-500 dark:text-neutral-400">
-          Clinical Operations & Medical Practitioner Management
+          Doctor & Patient Management System
         </p>
       </div>
 

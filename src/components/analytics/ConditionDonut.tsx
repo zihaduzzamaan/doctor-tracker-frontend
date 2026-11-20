@@ -71,10 +71,10 @@ export function ConditionDonut({ data, isLoading }: ConditionDonutProps) {
     <div className="bg-white dark:bg-[#121212] rounded-xl border border-slate-200 dark:border-neutral-800 p-6 shadow-subtle flex flex-col justify-between transition-colors">
       <div className="mb-2">
         <h3 className="text-base font-bold text-slate-900 dark:text-neutral-100 tracking-tight">
-          Clinical Conditions Distribution
+          Diagnoses Breakdown
         </h3>
         <p className="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
-          Top primary diagnosis categories for active inpatients
+          Top diagnoses across active patients
         </p>
       </div>
 

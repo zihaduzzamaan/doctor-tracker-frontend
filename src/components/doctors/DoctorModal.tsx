@@ -111,8 +111,8 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={doctor ? 'Edit Practitioner Profile' : 'Register New Doctor'}
-      description="Add or update doctor credentials, department affiliation, and contact details."
+      title={doctor ? 'Edit Doctor' : 'Add New Doctor'}
+      description="Add or update doctor information, department, and contact details."
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {errors.form && (
@@ -140,7 +140,7 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
           />
 
           <CustomSelect
-            label="Hospital Facility"
+            label="Hospital"
             required
             options={HOSPITALS}
             value={formData.hospital}
@@ -177,7 +177,7 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
             size="sm"
             isLoading={mutation.isPending}
           >
-            {doctor ? 'Save Changes' : 'Register Doctor'}
+            {doctor ? 'Save Changes' : 'Add Doctor'}
           </Button>
         </div>
       </form>

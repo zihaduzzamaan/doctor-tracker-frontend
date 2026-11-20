@@ -25,8 +25,8 @@ const GENDERS = [
 ];
 
 const STATUSES = [
-  { value: 'admitted', label: 'Admitted (Inpatient)' },
-  { value: 'observation', label: 'Clinical Observation' },
+  { value: 'admitted', label: 'Admitted' },
+  { value: 'observation', label: 'Observation' },
   { value: 'discharged', label: 'Discharged' },
 ];
 
@@ -154,8 +154,8 @@ export function PatientModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={patient ? 'Edit Admission Record' : 'Register New Patient Admission'}
-      description="Record inpatient medical details, assign attending doctor, and track clinical status."
+      title={patient ? 'Edit Patient Record' : 'Add New Patient'}
+      description="Enter patient details, assign a doctor, and set admission status."
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {errors.form && (
@@ -210,7 +210,7 @@ export function PatientModal({
           />
 
           <CustomSelect
-            label="Attending Doctor"
+            label="Assigned Doctor"
             required
             options={
               doctorOptions.length > 0
@@ -224,7 +224,7 @@ export function PatientModal({
         </div>
 
         <Input
-          label="Clinical Diagnosis / Condition"
+          label="Diagnosis / Condition"
           required
           placeholder="e.g. Acute Coronary Syndrome, Type 2 Diabetes"
           value={formData.condition}
@@ -234,14 +234,14 @@ export function PatientModal({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <CustomDatePicker
-            label="Admission Date"
+            label="Date Admitted"
             required
             value={formData.admission_date}
             onChange={(dateStr) => setFormData({ ...formData, admission_date: dateStr })}
           />
 
           <CustomSelect
-            label="Admission Status"
+            label="Status"
             required
             options={STATUSES}
             value={formData.status}
@@ -256,7 +256,7 @@ export function PatientModal({
 
         <div>
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-neutral-300 mb-1.5">
-            Clinical Notes (Optional)
+            Notes (Optional)
           </label>
           <textarea
             rows={2}
@@ -277,7 +277,7 @@ export function PatientModal({
             size="sm"
             isLoading={mutation.isPending}
           >
-            {patient ? 'Save Changes' : 'Record Admission'}
+            {patient ? 'Save Changes' : 'Add Patient'}
           </Button>
         </div>
       </form>

@@ -202,10 +202,10 @@ function DoctorsContent() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-neutral-800">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-neutral-100 tracking-tight">
-              Medical Practitioners Directory
+              Doctors
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 mt-1">
-              Browse doctor profiles, inspect real-time inpatient caseloads, and manage department staffing.
+              Browse doctor profiles, view assigned patients, and manage clinic staff.
             </p>
           </div>
           <Button
@@ -215,7 +215,7 @@ function DoctorsContent() {
             onClick={openRegisterDoctor}
             className="w-full sm:w-auto justify-center"
           >
-            Register Practitioner
+            Add Doctor
           </Button>
         </div>
 
@@ -223,7 +223,7 @@ function DoctorsContent() {
         <div className="bg-white dark:bg-[#121212] p-4 rounded-xl border border-slate-200 dark:border-neutral-800 shadow-subtle space-y-3 transition-colors">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input
-              placeholder="Search by doctor name..."
+              placeholder="Search doctors..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               leftIcon={<Search className="w-4 h-4" />}
@@ -240,13 +240,13 @@ function DoctorsContent() {
               options={HOSPITALS}
               value={hospital}
               onChange={(val) => setHospital(val)}
-              placeholder="All Hospital Facilities"
+              placeholder="All Hospitals"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-neutral-800 text-xs">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1 min-w-0">
-              <span className="font-semibold text-slate-600 dark:text-neutral-400 shrink-0">Registered Date Range:</span>
+              <span className="font-semibold text-slate-600 dark:text-neutral-400 shrink-0">Date Added:</span>
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <CustomDatePicker
                   value={startDate}
@@ -289,7 +289,7 @@ function DoctorsContent() {
         {/* Error State */}
         {isError && (
           <ErrorAlert
-            title="Unable to load practitioners"
+            title="Unable to load doctors"
             message={formatErrorMessage(error)}
             onRetry={() => refetch()}
           />
@@ -306,8 +306,8 @@ function DoctorsContent() {
           ) : doctors.length === 0 ? (
             <EmptyState
               icon={<Stethoscope className="w-6 h-6 text-slate-400 dark:text-neutral-500" />}
-              title="No Practitioners Found"
-              description="No medical doctors match your current search criteria or department filter."
+              title="No Doctors Found"
+              description="No doctors match your active search or department filter."
               actionLabel="Reset Search Filters"
               onAction={() => {
                 setSearch('');
@@ -345,7 +345,7 @@ function DoctorsContent() {
         doctor={editingDoctor}
       />
 
-      {/* Inpatient Admission Modal */}
+      {/* Patient Admission Modal */}
       <PatientModal
         isOpen={isPatientModalOpen}
         onClose={closePatientModal}

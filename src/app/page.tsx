@@ -116,10 +116,10 @@ function DashboardContent() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-neutral-800">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-neutral-100 tracking-tight">
-              Clinical Operations Dashboard
+              Dashboard
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 mt-1">
-              Real-time monitoring of practitioner workloads, inpatient admissions, and diagnostic trends.
+              Real-time overview of doctors, active patients, and diagnoses.
             </p>
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -139,20 +139,20 @@ function DashboardContent() {
               onClick={openPatientModal}
               className="flex-1 sm:flex-initial justify-center"
             >
-              New Admission
+              Add Patient
             </Button>
           </div>
         </div>
 
         {isError && (
           <ErrorAlert
-            title="Failed to fetch clinical analytics"
+            title="Failed to fetch analytics"
             message={formatErrorMessage(error)}
             onRetry={() => refetch()}
           />
         )}
 
-        {/* 4 Core Caseload Metric Cards */}
+        {/* 4 Core Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {isLoading ? (
             <>
@@ -166,7 +166,7 @@ function DashboardContent() {
               <MetricCard
                 title="Total Doctors"
                 value={summary?.totalDoctors || 0}
-                subtitle="Active registered practitioners"
+                subtitle="Registered doctors"
                 icon={<Users className="w-5 h-5" />}
                 variant="clinical"
                 badgeText="All Departments"
@@ -174,13 +174,13 @@ function DashboardContent() {
               <MetricCard
                 title="Total Patients"
                 value={summary?.totalPatients || 0}
-                subtitle="Cumulative admission cases"
+                subtitle="All-time patient admissions"
                 icon={<BedDouble className="w-5 h-5" />}
                 variant="clinical"
                 badgeText="Historical Records"
               />
               <MetricCard
-                title="Active Inpatients"
+                title="Current Patients"
                 value={activeAdmissions + observationCount}
                 subtitle={`${activeAdmissions} admitted, ${observationCount} observation`}
                 icon={<Activity className="w-5 h-5" />}
@@ -188,9 +188,9 @@ function DashboardContent() {
                 badgeText="In Bed"
               />
               <MetricCard
-                title="Discharged"
+                title="Discharged Patients"
                 value={dischargedCount}
-                subtitle="Completed clinical treatments"
+                subtitle="Successfully discharged"
                 icon={<CheckCircle2 className="w-5 h-5" />}
                 variant="slate"
                 badgeText="Resolved"

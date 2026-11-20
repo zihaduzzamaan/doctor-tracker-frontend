@@ -47,10 +47,10 @@ export function DoctorWorkload({ doctors, isLoading }: DoctorWorkloadProps) {
         <div className="flex items-start justify-between gap-2 mb-4">
           <div className="min-w-0">
             <h3 className="text-base font-bold text-slate-900 dark:text-neutral-100 tracking-tight">
-              Practitioner Caseload Ranking
+              Doctor Patient Caseload
             </h3>
             <p className="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
-              Active assigned inpatient distribution across medical staff
+              Patients currently assigned to each doctor
             </p>
           </div>
           <Link

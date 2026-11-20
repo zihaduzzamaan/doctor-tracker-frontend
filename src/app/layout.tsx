@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/theme/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Doctor Tracker: Healthcare Admin Portal',
-  description: 'Production-grade healthcare portal for tracking practitioners, admissions, and clinical workload.',
+  description: 'Healthcare portal for managing doctors, patient admissions, and caseloads.',
   icons: {
     icon: '/icon.svg',
     apple: '/icon.svg',

@@ -61,9 +61,9 @@ export function PatientTable({
           <thead>
             <tr className="border-b border-slate-200 dark:border-neutral-800 bg-slate-50/75 dark:bg-neutral-900 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-neutral-400">
               <th scope="col" className="py-3.5 px-4">Patient Name</th>
-              <th scope="col" className="py-3.5 px-4">Age / Sex</th>
-              <th scope="col" className="py-3.5 px-4">Clinical Diagnosis</th>
-              <th scope="col" className="py-3.5 px-4">Attending Doctor</th>
+              <th scope="col" className="py-3.5 px-4">Age / Gender</th>
+              <th scope="col" className="py-3.5 px-4">Diagnosis</th>
+              <th scope="col" className="py-3.5 px-4">Assigned Doctor</th>
               <th scope="col" className="py-3.5 px-4">Admitted</th>
               <th scope="col" className="py-3.5 px-4">Status</th>
               <th scope="col" className="py-3.5 px-4 text-right">Actions</th>
