@@ -260,7 +260,7 @@ export function PatientModal({
           </label>
           <textarea
             rows={2}
-            className="w-full rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-slate-900 dark:text-neutral-100 placeholder:text-slate-400 dark:placeholder:text-neutral-500 p-3 text-sm focus:border-clinical-600 dark:focus:border-clinical-400 focus:ring-2 focus:ring-clinical-100 dark:focus:ring-clinical-950/60 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-slate-900 dark:text-neutral-100 placeholder:text-slate-400 dark:placeholder:text-neutral-500 p-3 text-sm focus:border-clinical-600 dark:focus:border-clinical-400 focus:ring-1 focus:ring-clinical-600/25 dark:focus:ring-clinical-400/25 focus:outline-none"
             placeholder="Add relevant triage notes or treatment observations..."
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}

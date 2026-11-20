@@ -62,6 +62,25 @@ body {
   @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-black;
 }
 
+/* Eliminate outline and ring flashes on mouse clicks across all interactive elements */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible),
+[role="tab"]:focus:not(:focus-visible) {
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+}
+
+button:active,
+a:active,
+[role="button"]:active {
+  outline: none !important;
+}
+
 /* View Transitions API smooth radial reveal reset */
 ::view-transition-old(root),
 ::view-transition-new(root) {

@@ -57,8 +57,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               leftIcon ? 'pl-10' : ''
             } ${rightIcon ? 'pr-10' : ''} ${
               error
-                ? 'border-rose-400 dark:border-rose-600 focus:border-rose-500 focus:ring-2 focus:ring-rose-200 dark:focus:ring-rose-950/60'
-                : 'border-slate-300 dark:border-neutral-700 hover:border-slate-400 dark:hover:border-neutral-600 focus:border-clinical-600 dark:focus:border-clinical-400 focus:ring-2 focus:ring-clinical-100 dark:focus:ring-clinical-950/60'
+                ? 'border-rose-400 dark:border-rose-600 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/25'
+                : 'border-slate-300 dark:border-neutral-700 hover:border-slate-400 dark:hover:border-neutral-600 focus:border-clinical-600 dark:focus:border-clinical-400 focus:ring-1 focus:ring-clinical-600/25 dark:focus:ring-clinical-400/25'
             } disabled:bg-slate-50 dark:disabled:bg-neutral-950 disabled:text-slate-500 disabled:cursor-not-allowed focus:outline-none ${className}`}
             {...props}
           />

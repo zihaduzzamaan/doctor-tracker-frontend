@@ -125,6 +125,7 @@ export function CustomDatePicker({
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     onChange('');
     setIsOpen(false);
   };
@@ -167,24 +168,26 @@ export function CustomDatePicker({
         </label>
       )}
 
-      {/* Trigger Button */}
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        className={`w-full flex items-center justify-between gap-2 rounded-xl border bg-white dark:bg-neutral-900 text-left font-medium select-none transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+      {/* Trigger Box */}
+      <div
+        className={`w-full flex items-center justify-between gap-1.5 rounded-xl border bg-white dark:bg-neutral-900 text-left font-medium select-none transition-all ${
           sizeStyles[size]
         } ${
           error
             ? 'border-rose-400 dark:border-rose-600'
             : isOpen
-            ? 'border-clinical-600 dark:border-clinical-400 ring-2 ring-clinical-100 dark:ring-clinical-950/60'
+            ? 'border-clinical-600 dark:border-clinical-400 bg-clinical-50/15 dark:bg-clinical-950/20'
             : 'border-slate-300 dark:border-neutral-700 hover:border-slate-400 dark:hover:border-neutral-600'
-        }`}
+        } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        <div className="flex items-center gap-2 min-w-0 flex-1">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => setIsOpen(!isOpen)}
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
+          className="flex items-center gap-2 min-w-0 flex-1 text-left focus:outline-none focus-visible:outline-none select-none"
+        >
           <CalendarIcon className="w-4 h-4 text-clinical-600 dark:text-clinical-400 shrink-0" aria-hidden="true" />
           <span
             className={`truncate ${
@@ -195,21 +198,20 @@ export function CustomDatePicker({
           >
             {value ? formatDisplayValue(value) : placeholder}
           </span>
-        </div>
+        </button>
 
         {value && !disabled && (
-          <span
-            role="button"
-            tabIndex={0}
+          <button
+            type="button"
             onClick={handleClear}
-            className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors"
+            className="p-1 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors shrink-0 focus:outline-none"
             title="Clear date"
             aria-label="Clear selected date"
           >
             <X className="w-3.5 h-3.5" />
-          </span>
+          </button>
         )}
-      </button>
+      </div>
 
       {/* Floating Custom Calendar Popover */}
       {isOpen && (

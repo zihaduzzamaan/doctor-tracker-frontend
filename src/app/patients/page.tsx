@@ -332,9 +332,8 @@ function PatientsContent() {
             </div>
 
             {(search || status || condition || startDate || endDate) && (
-              <Button
-                variant="outline"
-                size="sm"
+              <button
+                type="button"
                 onClick={() => {
                   setSearch('');
                   setStatus('');
@@ -343,11 +342,11 @@ function PatientsContent() {
                   setEndDate('');
                   setPage(1);
                 }}
-                className="w-full sm:w-auto sm:ml-auto py-1 px-2.5 text-xs text-slate-500 dark:text-neutral-400 hover:text-slate-800 dark:hover:text-slate-100 justify-center"
-                leftIcon={<X className="w-3.5 h-3.5" />}
+                className="w-full sm:w-auto sm:ml-auto h-9 px-3 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/50 transition-colors flex items-center justify-center gap-1.5 shrink-0 focus:outline-none"
               >
-                Clear Filters
-              </Button>
+                <X className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>Clear Filters</span>
+              </button>
             )}
           </div>
         </div>

@@ -18,7 +18,7 @@ import { api } from '@/lib/api';
 import { formatErrorMessage } from '@/lib/errorHandler';
 import { Doctor, ApiResponse } from '@/lib/types';
 import { useDebounce } from '@/hooks/useDebounce';
-import { Search, Plus, Stethoscope } from 'lucide-react';
+import { Search, Plus, Stethoscope, X } from 'lucide-react';
 
 const SPECIALIZATIONS = [
   { value: '', label: 'All Specializations' },
@@ -269,6 +269,7 @@ function DoctorsContent() {
 
             {(search || specialization || hospital || startDate || endDate) && (
               <button
+                type="button"
                 onClick={() => {
                   setSearch('');
                   setSpecialization('');
@@ -276,9 +277,10 @@ function DoctorsContent() {
                   setStartDate('');
                   setEndDate('');
                 }}
-                className="w-full sm:w-auto py-1.5 px-3 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 bg-rose-50/50 dark:bg-rose-950/20 sm:bg-transparent sm:dark:bg-transparent text-center border border-rose-200/50 dark:border-rose-900/30 sm:border-0"
+                className="w-full sm:w-auto sm:ml-auto h-9 px-3 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/50 transition-colors flex items-center justify-center gap-1.5 shrink-0 focus:outline-none"
               >
-                Clear All Filters
+                <X className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>Clear All Filters</span>
               </button>
             )}
           </div>

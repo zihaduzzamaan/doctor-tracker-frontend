@@ -39,15 +39,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         'bg-clinical-600 text-white hover:bg-clinical-500 active:bg-clinical-700 shadow-sm border border-transparent',
       secondary:
-        'bg-slate-100 dark:bg-neutral-800 text-slate-800 dark:text-neutral-200 hover:bg-slate-200 dark:hover:bg-neutral-700 active:bg-slate-300 border border-slate-200 dark:border-neutral-700',
+        'bg-slate-100 dark:bg-neutral-800 text-slate-800 dark:text-neutral-200 hover:bg-slate-200 dark:hover:bg-neutral-700 active:bg-slate-300 dark:active:bg-neutral-700 border border-slate-200 dark:border-neutral-700',
       outline:
-        'bg-white dark:bg-neutral-900 text-slate-700 dark:text-neutral-200 hover:bg-slate-50 dark:hover:bg-neutral-800 border border-slate-300 dark:border-neutral-700 active:bg-slate-100 shadow-sm',
+        'bg-white dark:bg-neutral-900 text-slate-700 dark:text-neutral-200 hover:bg-slate-50 dark:hover:bg-neutral-800 border border-slate-300 dark:border-neutral-700 active:bg-slate-100 dark:active:bg-neutral-800 shadow-sm',
       accent:
         'bg-accent-500 text-slate-900 hover:bg-accent-400 active:bg-accent-600 font-bold shadow-sm border border-transparent',
       danger:
         'bg-rose-600 text-white hover:bg-rose-500 active:bg-rose-700 shadow-sm border border-transparent',
       ghost:
-        'bg-transparent text-slate-600 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white border border-transparent',
+        'bg-transparent text-slate-600 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-800 hover:text-slate-900 dark:hover:text-white border border-transparent active:bg-slate-200 dark:active:bg-neutral-800',
     };
 
     return (

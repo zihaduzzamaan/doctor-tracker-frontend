@@ -90,7 +90,7 @@ export function CustomSelect({
           error
             ? 'border-rose-400 dark:border-rose-600'
             : isOpen
-            ? 'border-clinical-600 dark:border-clinical-400 ring-2 ring-clinical-100 dark:ring-clinical-950/60'
+            ? 'border-clinical-600 dark:border-clinical-400 bg-clinical-50/15 dark:bg-clinical-950/20'
             : 'border-slate-300 dark:border-neutral-700 hover:border-slate-400 dark:hover:border-neutral-600'
         }`}
       >
