@@ -18,7 +18,7 @@ import { api } from '@/lib/api';
 import { formatErrorMessage } from '@/lib/errorHandler';
 import { Doctor, ApiResponse } from '@/lib/types';
 import { useDebounce } from '@/hooks/useDebounce';
-import { Search, Plus, Stethoscope, X } from 'lucide-react';
+import { Search, Plus, Stethoscope, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const SPECIALIZATIONS = [
   { value: '', label: 'All Specializations' },
@@ -58,6 +58,8 @@ function DoctorsContent() {
   const [hospital, setHospital] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [page, setPage] = useState(1);
+  const limit = 6;
 
   // Modals and Drawer state
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
@@ -67,9 +69,9 @@ function DoctorsContent() {
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
   const [targetDoctorId, setTargetDoctorId] = useState<string | null>(null);
 
-  // Fetch doctors with filters (including date-wise) and stable placeholder data
+  // Fetch doctors with filters (including date-wise), pagination, and stable placeholder data
   const { data, isPending, isFetching, isError, error, refetch } = useQuery({
-    queryKey: ['doctors', debouncedSearch, specialization, hospital, startDate, endDate],
+    queryKey: ['doctors', debouncedSearch, specialization, hospital, startDate, endDate, page],
     queryFn: ({ signal }) => {
       const params = new URLSearchParams();
       if (debouncedSearch) params.append('search', debouncedSearch);
@@ -77,13 +79,15 @@ function DoctorsContent() {
       if (hospital) params.append('hospital', hospital);
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
-      params.append('limit', '50');
+      params.append('page', page.toString());
+      params.append('limit', limit.toString());
       return api.get<ApiResponse<Doctor[]>>(`/doctors?${params.toString()}`, { signal });
     },
     placeholderData: keepPreviousData,
   });
 
   const doctors = data?.data || [];
+  const pagination = data?.pagination || { page: 1, limit: 6, total: 0, totalPages: 1 };
 
   // Synchronize modal and drawer state with URL query parameters for dedicated links
   useEffect(() => {
@@ -225,21 +229,30 @@ function DoctorsContent() {
             <Input
               placeholder="Search doctors..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               leftIcon={<Search className="w-4 h-4" />}
             />
 
             <CustomSelect
               options={SPECIALIZATIONS}
               value={specialization}
-              onChange={(val) => setSpecialization(val)}
+              onChange={(val) => {
+                setSpecialization(val);
+                setPage(1);
+              }}
               placeholder="All Specializations"
             />
 
             <CustomSelect
               options={HOSPITALS}
               value={hospital}
-              onChange={(val) => setHospital(val)}
+              onChange={(val) => {
+                setHospital(val);
+                setPage(1);
+              }}
               placeholder="All Hospitals"
             />
           </div>
@@ -250,7 +263,10 @@ function DoctorsContent() {
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <CustomDatePicker
                   value={startDate}
-                  onChange={(d) => setStartDate(d)}
+                  onChange={(d) => {
+                    setStartDate(d);
+                    setPage(1);
+                  }}
                   placeholder="Start date..."
                   size="sm"
                   className="w-full sm:w-36"
@@ -258,7 +274,10 @@ function DoctorsContent() {
                 <span className="text-slate-400 dark:text-neutral-500 shrink-0">to</span>
                 <CustomDatePicker
                   value={endDate}
-                  onChange={(d) => setEndDate(d)}
+                  onChange={(d) => {
+                    setEndDate(d);
+                    setPage(1);
+                  }}
                   placeholder="End date..."
                   size="sm"
                   align="right"
@@ -276,6 +295,7 @@ function DoctorsContent() {
                   setHospital('');
                   setStartDate('');
                   setEndDate('');
+                  setPage(1);
                 }}
                 className="w-full sm:w-auto sm:ml-auto h-9 px-3 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200/60 dark:border-rose-900/50 transition-colors flex items-center justify-center gap-1.5 shrink-0 focus:outline-none"
               >
@@ -313,19 +333,54 @@ function DoctorsContent() {
                 setSearch('');
                 setSpecialization('');
                 setHospital('');
+                setStartDate('');
+                setEndDate('');
+                setPage(1);
               }}
             />
           ) : (
-            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-200 ${isFetching ? 'opacity-75' : 'opacity-100'}`}>
-              {doctors.map((doctor) => (
-                <DoctorCard
-                  key={doctor._id}
-                  doctor={doctor}
-                  onOpenDrawer={handleOpenDrawer}
-                  onEdit={handleEditDoctor}
-                />
-              ))}
-            </div>
+            <>
+              <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-200 ${isFetching ? 'opacity-75' : 'opacity-100'}`}>
+                {doctors.map((doctor) => (
+                  <DoctorCard
+                    key={doctor._id}
+                    doctor={doctor}
+                    onOpenDrawer={handleOpenDrawer}
+                    onEdit={handleEditDoctor}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {pagination.totalPages > 1 && (
+                <div className="flex items-center justify-between px-2 pt-6 text-xs text-slate-500 dark:text-neutral-400">
+                  <span>
+                    Showing {doctors.length} of {pagination.total} doctors (Page {page} of{' '}
+                    {pagination.totalPages})
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page <= 1}
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      leftIcon={<ChevronLeft className="w-4 h-4" />}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page >= pagination.totalPages}
+                      onClick={() => setPage((p) => p + 1)}
+                      rightIcon={<ChevronRight className="w-4 h-4" />}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
