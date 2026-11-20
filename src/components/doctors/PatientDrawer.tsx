@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Doctor, Patient, ApiResponse } from '@/lib/types';
 import { api } from '@/lib/api';
@@ -11,6 +11,7 @@ import { Button } from '../ui/Button';
 import { Skeleton } from '../ui/Skeleton';
 import { EmptyState } from '../ui/EmptyState';
 import { ErrorAlert } from '../ui/ErrorAlert';
+import { ConfirmModal } from '../ui/ConfirmModal';
 import { iconContainerTokens } from '@/lib/themeTokens';
 import { User, Calendar, CheckCircle2, UserPlus, Stethoscope, Trash2 } from 'lucide-react';
 
@@ -28,6 +29,7 @@ export function PatientDrawer({
   onOpenAddPatient,
 }: PatientDrawerProps) {
   const queryClient = useQueryClient();
+  const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
 
   const {
     data,
@@ -233,11 +235,7 @@ export function PatientDrawer({
                         </Button>
                       )}
                       <button
-                        onClick={() => {
-                          if (window.confirm(`Are you sure you want to delete patient record for ${patient.patient_name}?`)) {
-                            deleteMutation.mutate(patient._id);
-                          }
-                        }}
+                        onClick={() => setPatientToDelete(patient)}
                         disabled={deleteMutation.isPending}
                         className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-md transition focus-ring"
                         title="Delete Patient Record"
@@ -252,6 +250,24 @@ export function PatientDrawer({
           </div>
         )}
       </div>
+
+      {/* Clinical Record Deletion Modal */}
+      <ConfirmModal
+        isOpen={Boolean(patientToDelete)}
+        onClose={() => setPatientToDelete(null)}
+        onConfirm={() => {
+          if (patientToDelete) {
+            deleteMutation.mutate(patientToDelete._id);
+            setPatientToDelete(null);
+          }
+        }}
+        title="Delete Patient Record"
+        message={`Are you sure you want to permanently delete the clinical record for ${patientToDelete?.patient_name}? This action cannot be undone.`}
+        confirmText="Delete Record"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={deleteMutation.isPending}
+      />
     </Drawer>
   );
 }

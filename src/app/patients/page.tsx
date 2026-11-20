@@ -8,6 +8,9 @@ import { PatientTable, PatientTableSkeleton } from '@/components/patients/Patien
 import { PatientModal } from '@/components/patients/PatientModal';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { CustomSelect } from '@/components/ui/CustomSelect';
+import { CustomDatePicker } from '@/components/ui/CustomDatePicker';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
@@ -45,6 +48,7 @@ function PatientsContent() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
+  const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
 
   // Fetch patients with stable placeholder data to eliminate layout shifts
   const { data, isPending, isFetching, isError, error, refetch } = useQuery({
@@ -265,31 +269,22 @@ function PatientsContent() {
               </div>
             </div>
 
-            {/* Mobile Status Filter: Touch Dropdown with Filter Icon */}
-            <div className="flex sm:hidden items-center gap-2 w-full">
-              <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-clinical-600 dark:text-clinical-400">
-                  <Filter className="w-4 h-4 shrink-0" aria-hidden="true" />
-                </div>
-                <select
-                  value={status}
-                  onChange={(e) => {
-                    setStatus(e.target.value);
-                    setPage(1);
-                  }}
-                  className="w-full pl-9 pr-9 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-neutral-900 border border-slate-200/80 dark:border-neutral-800 text-slate-900 dark:text-neutral-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 focus-visible:border-clinical-500 min-h-[44px] transition-colors appearance-none cursor-pointer"
-                  aria-label="Filter patients by status"
-                >
-                  {statusFilters.map((f) => (
-                    <option key={f.value} value={f.value} className="bg-white dark:bg-neutral-900 text-slate-900 dark:text-neutral-100 py-1.5">
-                      {f.label === 'All Inpatients' ? 'All Statuses' : f.label}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 dark:text-neutral-500">
-                  <ChevronDown className="w-4 h-4 shrink-0" aria-hidden="true" />
-                </div>
-              </div>
+            {/* Mobile Status Filter: Custom Designed Dropdown with Filter Icon */}
+            <div className="flex sm:hidden items-center w-full">
+              <CustomSelect
+                value={status}
+                onChange={(val) => {
+                  setStatus(val);
+                  setPage(1);
+                }}
+                leftIcon={<Filter className="w-4 h-4" />}
+                placeholder="All Statuses"
+                options={statusFilters.map((f) => ({
+                  value: f.value,
+                  label: f.label === 'All Inpatients' ? 'All Statuses' : f.label,
+                }))}
+                size="md"
+              />
             </div>
           </div>
 
@@ -311,26 +306,27 @@ function PatientsContent() {
             <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
               <span className="font-semibold text-slate-500 dark:text-neutral-400 shrink-0">Admission Date:</span>
               <div className="flex items-center gap-2 w-full sm:w-auto">
-                <input
-                  type="date"
+                <CustomDatePicker
                   value={startDate}
-                  onChange={(e) => {
-                    setStartDate(e.target.value);
+                  onChange={(val) => {
+                    setStartDate(val);
                     setPage(1);
                   }}
-                  className="w-full sm:w-auto min-w-0 border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
-                  title="Start Date"
+                  placeholder="Start Date"
+                  size="sm"
+                  className="w-full sm:w-36"
                 />
                 <span className="text-slate-400 dark:text-neutral-500 shrink-0">to</span>
-                <input
-                  type="date"
+                <CustomDatePicker
                   value={endDate}
-                  onChange={(e) => {
-                    setEndDate(e.target.value);
+                  onChange={(val) => {
+                    setEndDate(val);
                     setPage(1);
                   }}
-                  className="w-full sm:w-auto min-w-0 border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
-                  title="End Date"
+                  placeholder="End Date"
+                  size="sm"
+                  align="right"
+                  className="w-full sm:w-36"
                 />
               </div>
             </div>
@@ -391,8 +387,9 @@ function PatientsContent() {
                 onDischarge={(id) => dischargeMutation.mutate(id)}
                 onEdit={handleEdit}
                 onDelete={(id) => {
-                  if (window.confirm('Are you sure you want to delete this patient admission record?')) {
-                    deleteMutation.mutate(id);
+                  const found = patients.find((p) => p._id === id);
+                  if (found) {
+                    setPatientToDelete(found);
                   }
                 }}
               />
@@ -434,6 +431,24 @@ function PatientsContent() {
         isOpen={isModalOpen}
         onClose={closeModal}
         patient={editingPatient}
+      />
+
+      {/* Clinical Deletion Confirmation Modal */}
+      <ConfirmModal
+        isOpen={Boolean(patientToDelete)}
+        onClose={() => setPatientToDelete(null)}
+        onConfirm={() => {
+          if (patientToDelete) {
+            deleteMutation.mutate(patientToDelete._id);
+            setPatientToDelete(null);
+          }
+        }}
+        title="Confirm Inpatient Deletion"
+        message={`Are you sure you want to permanently delete the admission record for ${patientToDelete?.patient_name}? This action cannot be undone.`}
+        confirmText="Delete Record"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );

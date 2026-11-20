@@ -8,7 +8,8 @@ import { formatErrorMessage } from '@/lib/errorHandler';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
-import { Select } from '../ui/Select';
+import { CustomSelect } from '../ui/CustomSelect';
+import { CustomDatePicker } from '../ui/CustomDatePicker';
 
 export interface PatientModalProps {
   isOpen: boolean;
@@ -185,15 +186,15 @@ export function PatientModal({
             }
           />
 
-          <Select
+          <CustomSelect
             label="Gender"
             required
             options={GENDERS}
             value={formData.gender}
-            onChange={(e) =>
+            onChange={(val) =>
               setFormData({
                 ...formData,
-                gender: e.target.value as 'male' | 'female' | 'other',
+                gender: val as 'male' | 'female' | 'other',
               })
             }
           />
@@ -208,7 +209,7 @@ export function PatientModal({
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
           />
 
-          <Select
+          <CustomSelect
             label="Attending Doctor"
             required
             options={
@@ -217,7 +218,7 @@ export function PatientModal({
                 : [{ value: '', label: 'Loading doctors...' }]
             }
             value={formData.doctor_id}
-            onChange={(e) => setFormData({ ...formData, doctor_id: e.target.value })}
+            onChange={(val) => setFormData({ ...formData, doctor_id: val })}
             error={errors.doctor_id}
           />
         </div>
@@ -232,23 +233,22 @@ export function PatientModal({
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
+          <CustomDatePicker
             label="Admission Date"
-            type="date"
             required
             value={formData.admission_date}
-            onChange={(e) => setFormData({ ...formData, admission_date: e.target.value })}
+            onChange={(dateStr) => setFormData({ ...formData, admission_date: dateStr })}
           />
 
-          <Select
+          <CustomSelect
             label="Admission Status"
             required
             options={STATUSES}
             value={formData.status}
-            onChange={(e) =>
+            onChange={(val) =>
               setFormData({
                 ...formData,
-                status: e.target.value as 'admitted' | 'observation' | 'under_observation' | 'discharged',
+                status: val as 'admitted' | 'observation' | 'under_observation' | 'discharged',
               })
             }
           />

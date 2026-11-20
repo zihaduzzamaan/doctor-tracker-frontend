@@ -8,7 +8,7 @@ import { formatErrorMessage } from '@/lib/errorHandler';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
-import { Select } from '../ui/Select';
+import { CustomSelect } from '../ui/CustomSelect';
 
 export interface DoctorModalProps {
   isOpen: boolean;
@@ -131,20 +131,20 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Select
+          <CustomSelect
             label="Specialization"
             required
             options={SPECIALIZATIONS}
             value={formData.specialization}
-            onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+            onChange={(val) => setFormData({ ...formData, specialization: val })}
           />
 
-          <Select
+          <CustomSelect
             label="Hospital Facility"
             required
             options={HOSPITALS}
             value={formData.hospital}
-            onChange={(e) => setFormData({ ...formData, hospital: e.target.value })}
+            onChange={(val) => setFormData({ ...formData, hospital: val })}
           />
         </div>
 

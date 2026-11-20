@@ -9,7 +9,8 @@ import { PatientDrawer } from '@/components/doctors/PatientDrawer';
 import { DoctorModal } from '@/components/doctors/DoctorModal';
 import { PatientModal } from '@/components/patients/PatientModal';
 import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
+import { CustomSelect } from '@/components/ui/CustomSelect';
+import { CustomDatePicker } from '@/components/ui/CustomDatePicker';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
@@ -228,16 +229,18 @@ function DoctorsContent() {
               leftIcon={<Search className="w-4 h-4" />}
             />
 
-            <Select
+            <CustomSelect
               options={SPECIALIZATIONS}
               value={specialization}
-              onChange={(e) => setSpecialization(e.target.value)}
+              onChange={(val) => setSpecialization(val)}
+              placeholder="All Specializations"
             />
 
-            <Select
+            <CustomSelect
               options={HOSPITALS}
               value={hospital}
-              onChange={(e) => setHospital(e.target.value)}
+              onChange={(val) => setHospital(val)}
+              placeholder="All Hospital Facilities"
             />
           </div>
 
@@ -245,20 +248,21 @@ function DoctorsContent() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1 min-w-0">
               <span className="font-semibold text-slate-600 dark:text-neutral-400 shrink-0">Registered Date Range:</span>
               <div className="flex items-center gap-2 w-full sm:w-auto">
-                <input
-                  type="date"
+                <CustomDatePicker
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full sm:w-auto min-w-0 rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
-                  title="Registered Start Date"
+                  onChange={(d) => setStartDate(d)}
+                  placeholder="Start date..."
+                  size="sm"
+                  className="w-full sm:w-36"
                 />
                 <span className="text-slate-400 dark:text-neutral-500 shrink-0">to</span>
-                <input
-                  type="date"
+                <CustomDatePicker
                   value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full sm:w-auto min-w-0 rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
-                  title="Registered End Date"
+                  onChange={(d) => setEndDate(d)}
+                  placeholder="End date..."
+                  size="sm"
+                  align="right"
+                  className="w-full sm:w-36"
                 />
               </div>
             </div>
