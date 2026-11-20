@@ -73,32 +73,18 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* 1-Click Demo Login Banner */}
-          <div className="mb-6 rounded-xl bg-clinical-50/80 dark:bg-clinical-950/30 border border-clinical-200/80 dark:border-clinical-900/60 p-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-clinical-100 dark:bg-clinical-900/60 text-clinical-700 dark:text-clinical-300 shrink-0">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xs font-bold text-clinical-900 dark:text-clinical-200">
-                  Evaluation Demo Mode
-                </h2>
-                <p className="text-[11px] text-clinical-700 dark:text-clinical-300 mt-0.5 leading-snug">
-                  Click below to prefill verified clinic admin credentials.
-                </p>
-                <div className="mt-2.5">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-xs font-semibold border-clinical-300 dark:border-clinical-700 text-clinical-800 dark:text-clinical-200 bg-white dark:bg-neutral-800 hover:bg-clinical-50 dark:hover:bg-clinical-950/60"
-                    onClick={fillDemoCredentials}
-                  >
-                    Fill Demo Credentials (`admin@clinic.com`)
-                  </Button>
-                </div>
-              </div>
-            </div>
+          {/* Quick Demo Credentials Fill Button */}
+          <div className="mb-5">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-full text-xs font-medium border-slate-200 dark:border-neutral-800 text-slate-700 dark:text-neutral-300 hover:text-clinical-700 dark:hover:text-clinical-400 bg-slate-50/60 dark:bg-neutral-900/40 hover:bg-slate-100 dark:hover:bg-neutral-800/80 transition-colors"
+              onClick={fillDemoCredentials}
+              leftIcon={<Sparkles className="w-3.5 h-3.5 text-clinical-600 dark:text-clinical-400" />}
+            >
+              Fill Demo Credentials (admin@clinic.com)
+            </Button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
