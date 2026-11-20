@@ -167,7 +167,7 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-neutral-800">
           <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>

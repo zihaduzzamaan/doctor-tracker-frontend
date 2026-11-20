@@ -56,27 +56,27 @@ export function Modal({
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Modal Dialog */}
       <div
-        className={`relative w-full ${maxWidthStyles[maxWidth]} rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-drawer border border-slate-200 dark:border-slate-800 z-10 my-8 transition-colors`}
+        className={`relative w-full ${maxWidthStyles[maxWidth]} rounded-2xl bg-white dark:bg-[#121212] p-6 shadow-drawer border border-slate-200 dark:border-neutral-800 z-10 my-8 transition-colors`}
       >
-        <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-neutral-800">
           <div>
-            <h2 id="modal-title" className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            <h2 id="modal-title" className="text-lg font-bold text-slate-900 dark:text-neutral-100 tracking-tight">
               {title}
             </h2>
             {description && (
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{description}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-neutral-400 leading-relaxed">{description}</p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition focus-ring"
+            className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-neutral-200 hover:bg-slate-100 dark:hover:bg-neutral-800 transition focus-ring"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />

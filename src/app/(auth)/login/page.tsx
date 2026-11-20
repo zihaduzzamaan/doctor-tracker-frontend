@@ -58,16 +58,16 @@ export default function LoginPage() {
             <Activity className="w-8 h-8" />
           </div>
         </div>
-        <h1 className="mt-4 text-center text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+        <h1 className="mt-4 text-center text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-neutral-100 tracking-tight">
           Doctor Tracker Portal
         </h1>
-        <p className="mt-1 text-center text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-1 text-center text-xs sm:text-sm text-slate-500 dark:text-neutral-400">
           Clinical Operations & Medical Practitioner Management
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="bg-white dark:bg-slate-900 py-8 px-6 sm:px-10 shadow-drawer sm:rounded-2xl border border-slate-200 dark:border-slate-800 transition-colors">
+        <div className="bg-white dark:bg-[#121212] py-8 px-6 sm:px-10 shadow-drawer sm:rounded-2xl border border-slate-200 dark:border-neutral-800 transition-colors">
           {error && (
             <div className="mb-6">
               <ErrorAlert title="Sign In Failed" message={error} />
@@ -75,16 +75,16 @@ export default function LoginPage() {
           )}
 
           {/* 1-Click Demo Login Banner */}
-          <div className="mb-6 rounded-xl bg-clinical-50/80 dark:bg-teal-950/40 border border-clinical-200/80 dark:border-teal-800/60 p-4">
+          <div className="mb-6 rounded-xl bg-clinical-50/80 dark:bg-clinical-950/30 border border-clinical-200/80 dark:border-clinical-900/60 p-4">
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-clinical-100 dark:bg-teal-900/60 text-clinical-700 dark:text-teal-300 shrink-0">
+              <div className="p-2 rounded-lg bg-clinical-100 dark:bg-clinical-900/60 text-clinical-700 dark:text-clinical-300 shrink-0">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xs font-bold text-clinical-900 dark:text-teal-200">
+                <h2 className="text-xs font-bold text-clinical-900 dark:text-clinical-200">
                   Evaluation Demo Mode
                 </h2>
-                <p className="text-[11px] text-clinical-700 dark:text-teal-300 mt-0.5 leading-snug">
+                <p className="text-[11px] text-clinical-700 dark:text-clinical-300 mt-0.5 leading-snug">
                   Click below to prefill verified clinic admin credentials.
                 </p>
                 <div className="mt-2.5">
@@ -92,7 +92,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="w-full text-xs font-semibold border-clinical-300 dark:border-teal-700 text-clinical-800 dark:text-teal-200 bg-white dark:bg-slate-800 hover:bg-clinical-50 dark:hover:bg-teal-950/60"
+                    className="w-full text-xs font-semibold border-clinical-300 dark:border-clinical-700 text-clinical-800 dark:text-clinical-200 bg-white dark:bg-neutral-800 hover:bg-clinical-50 dark:hover:bg-clinical-950/60"
                     onClick={fillDemoCredentials}
                   >
                     Fill Demo Credentials (`admin@clinic.com`)
@@ -139,7 +139,7 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-2 text-xs text-slate-400 dark:text-slate-500">
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-center gap-2 text-xs text-slate-400 dark:text-neutral-500">
             <ShieldCheck className="w-4 h-4 text-clinical-600 dark:text-clinical-400" />
             <span>OWASP ASVS Compliant • 256-bit Encrypted Session</span>
           </div>

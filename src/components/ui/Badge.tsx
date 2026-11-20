@@ -38,22 +38,22 @@ export function Badge({
     },
     observation: {
       badge:
-        'bg-clinical-50 dark:bg-teal-950/40 text-clinical-800 dark:text-teal-300 border border-clinical-200 dark:border-teal-800/60 font-semibold',
+        'bg-clinical-50 dark:bg-clinical-950/40 text-clinical-800 dark:text-clinical-300 border border-clinical-200 dark:border-clinical-800/60 font-semibold',
       dot: 'bg-clinical-500',
     },
     under_observation: {
       badge:
-        'bg-clinical-50 dark:bg-teal-950/40 text-clinical-800 dark:text-teal-300 border border-clinical-200 dark:border-teal-800/60 font-semibold',
+        'bg-clinical-50 dark:bg-clinical-950/40 text-clinical-800 dark:text-clinical-300 border border-clinical-200 dark:border-clinical-800/60 font-semibold',
       dot: 'bg-clinical-500',
     },
     discharged: {
       badge:
-        'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium',
-      dot: 'bg-slate-400 dark:bg-slate-500',
+        'bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 border border-slate-200 dark:border-neutral-700 font-medium',
+      dot: 'bg-slate-400 dark:bg-neutral-500',
     },
     clinical: {
       badge:
-        'bg-clinical-50 dark:bg-teal-950/40 text-clinical-800 dark:text-teal-300 border border-clinical-200 dark:border-teal-800/60 font-medium',
+        'bg-clinical-50 dark:bg-clinical-950/40 text-clinical-800 dark:text-clinical-300 border border-clinical-200 dark:border-clinical-800/60 font-medium',
       dot: 'bg-clinical-600',
     },
     accent: {
@@ -63,7 +63,7 @@ export function Badge({
     },
     neutral: {
       badge:
-        'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium',
+        'bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 border border-slate-200 dark:border-neutral-700 font-medium',
       dot: 'bg-slate-500',
     },
   };

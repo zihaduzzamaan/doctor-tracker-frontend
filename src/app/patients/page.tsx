@@ -94,17 +94,17 @@ export default function PatientsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] flex flex-col transition-colors duration-150">
+    <div className="min-h-screen bg-slate-50 dark:bg-black flex flex-col transition-colors duration-150">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-neutral-800">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-neutral-100 tracking-tight">
               Inpatient Management
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 mt-1">
               Track clinical admissions, monitor attending doctors, and process patient discharges.
             </p>
           </div>
@@ -122,7 +122,7 @@ export default function PatientsPage() {
         </div>
 
         {/* Search & Segmented Status Filter Tabs */}
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-subtle space-y-3 transition-colors">
+        <div className="bg-white dark:bg-[#121212] p-4 rounded-xl border border-slate-200 dark:border-neutral-800 shadow-subtle space-y-3 transition-colors">
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             <div className="w-full sm:max-w-xs">
               <Input
@@ -138,7 +138,7 @@ export default function PatientsPage() {
 
             {/* Accessible Segmented Control without Clipping */}
             <div
-              className="inline-flex p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl border border-slate-200/80 dark:border-slate-700/80 gap-1 overflow-x-auto max-w-full"
+              className="inline-flex p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200/80 dark:border-neutral-800 gap-1 overflow-x-auto max-w-full"
               role="tablist"
               aria-label="Filter patients by clinical status"
             >
@@ -156,7 +156,7 @@ export default function PatientsPage() {
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
                       active
                         ? 'bg-clinical-600 text-white shadow-sm font-bold'
-                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/50'
+                        : 'text-slate-600 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-neutral-800'
                     }`}
                   >
                     {f.label}
@@ -167,9 +167,9 @@ export default function PatientsPage() {
           </div>
 
           {/* Condition and Date-Wise Filters */}
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-3 text-xs">
+          <div className="pt-2 border-t border-slate-100 dark:border-neutral-800 flex flex-wrap items-center gap-3 text-xs">
             <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-slate-500 dark:text-slate-400">Condition:</span>
+              <span className="font-semibold text-slate-500 dark:text-neutral-400">Condition:</span>
               <Input
                 placeholder="e.g. Cardiology, Hypertension"
                 value={condition}
@@ -182,7 +182,7 @@ export default function PatientsPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-500 dark:text-slate-400">Admission Date:</span>
+              <span className="font-semibold text-slate-500 dark:text-neutral-400">Admission Date:</span>
               <input
                 type="date"
                 value={startDate}
@@ -190,10 +190,10 @@ export default function PatientsPage() {
                   setStartDate(e.target.value);
                   setPage(1);
                 }}
-                className="border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
+                className="border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
                 title="Start Date"
               />
-              <span className="text-slate-400 dark:text-slate-500">to</span>
+              <span className="text-slate-400 dark:text-neutral-500">to</span>
               <input
                 type="date"
                 value={endDate}
@@ -201,7 +201,7 @@ export default function PatientsPage() {
                   setEndDate(e.target.value);
                   setPage(1);
                 }}
-                className="border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
+                className="border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
                 title="End Date"
               />
             </div>
@@ -218,7 +218,7 @@ export default function PatientsPage() {
                   setEndDate('');
                   setPage(1);
                 }}
-                className="ml-auto py-1 px-2.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100"
+                className="ml-auto py-1 px-2.5 text-xs text-slate-500 dark:text-neutral-400 hover:text-slate-800 dark:hover:text-white"
                 leftIcon={<X className="w-3.5 h-3.5" />}
               >
                 Clear Filters
@@ -241,7 +241,7 @@ export default function PatientsPage() {
           <PatientTableSkeleton />
         ) : patients.length === 0 ? (
           <EmptyState
-            icon={<BedDouble className="w-6 h-6 text-slate-400 dark:text-slate-500" />}
+            icon={<BedDouble className="w-6 h-6 text-slate-400 dark:text-neutral-500" />}
             title="No Inpatient Records"
             description="No admissions match your search filter or active category."
             actionLabel="Reset Search"
@@ -268,7 +268,7 @@ export default function PatientsPage() {
             />
 
             {/* Pagination Controls */}
-            <div className="flex items-center justify-between px-2 pt-2 text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center justify-between px-2 pt-2 text-xs text-slate-500 dark:text-neutral-400">
               <span>
                 Showing {patients.length} of {pagination.total} records (Page {page} of{' '}
                 {pagination.totalPages})
