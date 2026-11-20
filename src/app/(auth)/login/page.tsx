@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Activity, ShieldCheck, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorAlert } from '@/components/ui/ErrorAlert';
@@ -54,9 +55,7 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Brand Header */}
         <div className="flex justify-center">
-          <div className="w-14 h-14 rounded-2xl bg-clinical-600 text-white flex items-center justify-center shadow-card">
-            <Activity className="w-8 h-8" />
-          </div>
+          <BrandLogo size="xl" className="shadow-card" />
         </div>
         <h1 className="mt-4 text-center text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-neutral-100 tracking-tight">
           Doctor Tracker Portal

@@ -6,6 +6,10 @@ import { ThemeProvider } from '@/components/theme/ThemeProvider';
 export const metadata: Metadata = {
   title: 'Doctor Tracker: Healthcare Admin Portal',
   description: 'Production-grade healthcare portal for tracking practitioners, admissions, and clinical workload.',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatedThemeToggler } from '@/registry/magicui/animated-theme-toggler';
+import { BrandLogo } from '@/components/ui/BrandLogo';
 import { pillTokens } from '@/lib/themeTokens';
 import {
   Activity,
@@ -61,10 +62,8 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-3 group focus-ring rounded-lg p-1">
-              <div className="w-10 h-10 rounded-xl bg-clinical-600 text-white flex items-center justify-center shadow-sm group-hover:bg-clinical-700 transition">
-                <Activity className="w-5 h-5" />
-              </div>
+            <Link href="/" className="flex items-center gap-3 group focus-ring rounded-lg p-1" aria-label="Doctor Tracker Home">
+              <BrandLogo size="md" />
               <div className="flex flex-col">
                 <span className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-neutral-100 tracking-tight leading-tight">
                   Doctor Tracker

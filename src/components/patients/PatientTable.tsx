@@ -27,8 +27,9 @@ export function PatientTable({
 
   const getDoctorDisplay = (doc: Patient['doctor_id']) => {
     if (!doc) return 'Unassigned';
-    if (typeof doc === 'string') return doc;
-    return doc.doctor_name || 'Unassigned';
+    const rawName = typeof doc === 'string' ? doc : doc.doctor_name || 'Unassigned';
+    if (rawName === 'Unassigned' || !rawName.trim()) return 'Unassigned';
+    return /^dr\.?\s+/i.test(rawName.trim()) ? rawName.trim() : `Dr. ${rawName.trim()}`;
   };
 
   const getDoctorSpecialty = (doc: Patient['doctor_id']) => {
@@ -187,7 +188,7 @@ export function PatientTable({
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Stethoscope className="w-3.5 h-3.5 text-clinical-600 dark:text-clinical-400 shrink-0" />
-                  <span>Dr. {getDoctorDisplay(patient.doctor_id)}</span>
+                  <span>{getDoctorDisplay(patient.doctor_id)}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-400 dark:text-neutral-500">
                   <Calendar className="w-3.5 h-3.5 shrink-0" />

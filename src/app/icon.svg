@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <linearGradient id="clinicGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D9488" />
+      <stop offset="100%" stop-color="#0F766E" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Square Base with Smooth Squircle-style Radius -->
+  <rect width="48" height="48" rx="12" fill="url(#clinicGrad)" />
+  
+  <!-- Subtle Inner Glass Ring -->
+  <rect x="1" y="1" width="46" height="46" rx="11" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1.5" />
+
+  <!-- Unified Medical Cross Symbol -->
+  <g filter="url(#shadow)">
+    <!-- Vertical Cross Bar -->
+    <rect x="19" y="8" width="10" height="32" rx="3.5" fill="#FFFFFF" />
+    <!-- Horizontal Cross Bar -->
+    <rect x="8" y="19" width="32" height="10" rx="3.5" fill="#FFFFFF" />
+  </g>
+
+  <!-- Negative Space / Clinical Heartbeat Pulse Line -->
+  <path
+    d="M9 24h9l3-7 5 14 3.5-9 2.5 2h7"
+    fill="none"
+    stroke="#0D9488"
+    stroke-width="2.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
