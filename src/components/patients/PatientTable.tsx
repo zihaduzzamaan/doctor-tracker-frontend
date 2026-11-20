@@ -110,9 +110,11 @@ export function PatientTable({
                     {formatDate(patient.admission_date)}
                   </td>
                   <td className="py-3.5 px-4">
-                    <Badge variant={patient.status} size="sm" withDot>
-                      {formatStatus(patient.status)}
-                    </Badge>
+                    <div className="flex items-center">
+                      <Badge variant={patient.status} size="sm" withDot>
+                        {formatStatus(patient.status)}
+                      </Badge>
+                    </div>
                   </td>
                   <td className="py-3.5 px-4 text-right space-x-2">
                     {onEdit && (

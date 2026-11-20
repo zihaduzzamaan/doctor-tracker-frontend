@@ -27,8 +27,8 @@ export function Badge({
   className = '',
 }: BadgeProps) {
   const sizeStyles = {
-    sm: 'px-2 py-0.5 text-[11px] gap-1',
-    md: 'px-2.5 py-1 text-xs gap-1.5',
+    sm: 'h-6 px-2.5 text-[11px] gap-1.5',
+    md: 'h-7 px-3 text-xs gap-1.5',
   };
 
   const currentVariant: BadgeTokenStyle =
@@ -36,7 +36,7 @@ export function Badge({
 
   return (
     <span
-      className={`inline-flex items-center rounded-full shrink-0 tracking-wide select-none ${sizeStyles[size]} ${currentVariant.badge} ${className}`}
+      className={`inline-flex items-center justify-center rounded-full shrink-0 font-semibold leading-none tracking-wide select-none ${sizeStyles[size]} ${currentVariant.badge} ${className}`}
     >
       {withDot && (
         <span
@@ -44,7 +44,7 @@ export function Badge({
           aria-hidden="true"
         />
       )}
-      <span className="whitespace-nowrap">{children}</span>
+      <span className="whitespace-nowrap flex items-center">{children}</span>
     </span>
   );
 }
