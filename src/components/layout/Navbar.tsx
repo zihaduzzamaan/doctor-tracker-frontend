@@ -100,25 +100,33 @@ export function Navbar() {
           </div>
 
           {/* Desktop User Section */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2.5">
             {/* Animated Theme Toggler from Magic UI / shadcn */}
             <AnimatedThemeToggler />
 
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800">
-              <div className="w-2 h-2 rounded-full bg-clinical-500 animate-pulse" />
-              <ShieldCheck className="w-4 h-4 text-slate-500 dark:text-neutral-400" />
-              <span className="text-xs font-medium text-slate-700 dark:text-neutral-300 max-w-[160px] truncate">
-                {userEmail || 'admin@clinic.com'}
-              </span>
+            {/* Unified Session Pill: Authenticated User + Integrated Sign Out */}
+            <div className="flex items-center h-9 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-xs overflow-hidden shadow-2xs">
+              <div className="flex items-center gap-2 pl-2.5 pr-3 h-full select-none">
+                <div className="w-5 h-5 rounded-md bg-clinical-500/15 dark:bg-clinical-500/20 text-clinical-600 dark:text-clinical-400 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                </div>
+                <span className="font-semibold text-slate-700 dark:text-neutral-200 max-w-[150px] truncate tracking-tight">
+                  {userEmail || 'admin@clinic.com'}
+                </span>
+              </div>
+
+              <div className="w-px h-4 bg-slate-200 dark:bg-neutral-800 shrink-0" aria-hidden="true" />
+
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-3 h-full font-semibold text-slate-500 dark:text-neutral-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/80 dark:hover:bg-rose-950/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 shrink-0"
+                title="Sign out of portal"
+                aria-label="Sign out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign Out</span>
+              </button>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-neutral-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition focus-ring"
-              title="Sign Out"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
-            </button>
           </div>
 
           {/* Mobile Actions: Animated Theme Toggler + Menu Button */}
@@ -167,9 +175,14 @@ export function Navbar() {
           </nav>
 
           <div className="pt-4 mt-3 border-t border-slate-200 dark:border-neutral-800 flex flex-col gap-3">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 text-xs text-slate-600 dark:text-neutral-300">
-              <ShieldCheck className="w-4 h-4 text-clinical-600 dark:text-clinical-400" />
-              <span className="font-medium truncate">{userEmail || 'admin@clinic.com'}</span>
+            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 text-xs">
+              <div className="w-6 h-6 rounded-md bg-clinical-500/15 dark:bg-clinical-500/20 text-clinical-600 dark:text-clinical-400 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-neutral-500 tracking-wider">Authenticated Staff</span>
+                <span className="font-semibold text-slate-800 dark:text-neutral-200 truncate">{userEmail || 'admin@clinic.com'}</span>
+              </div>
             </div>
             <button
               onClick={handleLogout}
