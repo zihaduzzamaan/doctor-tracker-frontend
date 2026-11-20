@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
@@ -13,7 +13,7 @@ export interface AnimatedThemeTogglerProps
 /**
  * AnimatedThemeToggler component from Magic UI / shadcn registry.
  * Uses browser View Transitions API with expanding radial clip-path animation
- * and lucide Sun/Moon iconography.
+ * and lucide Sun/Moon iconography with clean mutual exclusion to prevent icon collision.
  */
 export function AnimatedThemeToggler({
   className = '',
@@ -22,6 +22,11 @@ export function AnimatedThemeToggler({
 }: AnimatedThemeTogglerProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { theme, toggleTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     const isCurrentlyDark = theme === 'dark';
@@ -90,8 +95,18 @@ export function AnimatedThemeToggler({
       title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       {...props}
     >
-      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0 text-amber-500" />
-      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100 text-neutral-200" />
+      {mounted ? (
+        theme === 'dark' ? (
+          <Moon className="h-4 w-4 text-neutral-200 transition-all duration-200" />
+        ) : (
+          <Sun className="h-4 w-4 text-amber-500 transition-all duration-200" />
+        )
+      ) : (
+        <>
+          <Sun className="h-4 w-4 text-amber-500 dark:hidden" />
+          <Moon className="h-4 w-4 text-neutral-200 hidden dark:block" />
+        </>
+      )}
       <span className="sr-only">Toggle theme</span>
     </button>
   );
