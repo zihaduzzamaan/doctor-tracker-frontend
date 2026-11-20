@@ -36,8 +36,8 @@ export function PatientDrawer({
     refetch,
   } = useQuery({
     queryKey: ['patients', 'doctor', doctor?._id],
-    queryFn: () =>
-      api.get<ApiResponse<Patient[]>>(`/patients?doctor_id=${doctor?._id}`),
+    queryFn: ({ signal }) =>
+      api.get<ApiResponse<Patient[]>>(`/patients?doctor_id=${doctor?._id}`, { signal }),
     enabled: Boolean(doctor?._id && isOpen),
   });
 

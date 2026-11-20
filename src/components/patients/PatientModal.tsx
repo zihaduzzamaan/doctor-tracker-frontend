@@ -40,7 +40,7 @@ export function PatientModal({
   // Query doctors for dropdown
   const { data: doctorsData } = useQuery({
     queryKey: ['doctors', 'dropdown'],
-    queryFn: () => api.get<ApiResponse<Doctor[]>>('/doctors?limit=50'),
+    queryFn: ({ signal }) => api.get<ApiResponse<Doctor[]>>('/doctors?limit=50', { signal }),
     enabled: isOpen,
   });
 

@@ -27,7 +27,10 @@ export async function apiClient<T>(
       ...options,
       headers,
     });
-  } catch (networkError) {
+  } catch (networkError: unknown) {
+    if (networkError instanceof Error && networkError.name === 'AbortError') {
+      throw networkError;
+    }
     console.error('[API Network Error]:', networkError);
     throw new Error('Connection failed. Please check your internet and try again.');
   }

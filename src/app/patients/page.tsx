@@ -12,14 +12,17 @@ import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
 import { formatErrorMessage } from '@/lib/errorHandler';
 import { Patient, ApiResponse } from '@/lib/types';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Search, Plus, BedDouble, ChevronLeft, ChevronRight, Calendar, X, Filter } from 'lucide-react';
 
 export default function PatientsPage() {
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [status, setStatus] = useState<string>('');
   const [condition, setCondition] = useState('');
+  const debouncedCondition = useDebounce(condition, 300);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [page, setPage] = useState(1);
@@ -30,17 +33,17 @@ export default function PatientsPage() {
 
   // Fetch patients
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['patients', search, status, condition, startDate, endDate, page],
-    queryFn: () => {
+    queryKey: ['patients', debouncedSearch, status, debouncedCondition, startDate, endDate, page],
+    queryFn: ({ signal }) => {
       const params = new URLSearchParams();
-      if (search) params.append('search', search);
+      if (debouncedSearch) params.append('search', debouncedSearch);
       if (status) params.append('status', status);
-      if (condition) params.append('condition', condition);
+      if (debouncedCondition) params.append('condition', debouncedCondition);
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
       params.append('page', page.toString());
       params.append('limit', limit.toString());
-      return api.get<ApiResponse<Patient[]>>(`/patients?${params.toString()}`);
+      return api.get<ApiResponse<Patient[]>>(`/patients?${params.toString()}`, { signal });
     },
   });
 

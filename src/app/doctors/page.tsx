@@ -15,6 +15,7 @@ import { ErrorAlert } from '@/components/ui/ErrorAlert';
 import { api } from '@/lib/api';
 import { formatErrorMessage } from '@/lib/errorHandler';
 import { Doctor, ApiResponse } from '@/lib/types';
+import { useDebounce } from '@/hooks/useDebounce';
 import { Search, Plus, Stethoscope, Filter } from 'lucide-react';
 
 const SPECIALIZATIONS = [
@@ -38,6 +39,7 @@ const HOSPITALS = [
 
 export default function DoctorsPage() {
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const [specialization, setSpecialization] = useState('');
   const [hospital, setHospital] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -53,16 +55,16 @@ export default function DoctorsPage() {
 
   // Fetch doctors with filters (including date-wise)
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['doctors', search, specialization, hospital, startDate, endDate],
-    queryFn: () => {
+    queryKey: ['doctors', debouncedSearch, specialization, hospital, startDate, endDate],
+    queryFn: ({ signal }) => {
       const params = new URLSearchParams();
-      if (search) params.append('search', search);
+      if (debouncedSearch) params.append('search', debouncedSearch);
       if (specialization) params.append('specialization', specialization);
       if (hospital) params.append('hospital', hospital);
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
       params.append('limit', '50');
-      return api.get<ApiResponse<Doctor[]>>(`/doctors?${params.toString()}`);
+      return api.get<ApiResponse<Doctor[]>>(`/doctors?${params.toString()}`, { signal });
     },
   });
 

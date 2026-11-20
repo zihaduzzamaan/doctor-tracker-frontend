@@ -47,7 +47,8 @@ export default function DashboardPage() {
     refetch,
   } = useQuery({
     queryKey: ['analytics', 'summary'],
-    queryFn: () => api.get<ApiResponse<AnalyticsSummary>>('/analytics/summary'),
+    queryFn: ({ signal }) =>
+      api.get<ApiResponse<AnalyticsSummary>>('/analytics/summary', { signal }),
   });
 
   const summary = summaryData?.data;
