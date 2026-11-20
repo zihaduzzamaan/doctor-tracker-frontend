@@ -8,7 +8,7 @@ Doctor Tracker Frontend is a responsive, clinical-grade administrative web appli
 
 | Environment | Host Platform | Live URL | Status |
 | :--- | :--- | :--- | :--- |
-| **Production Website** | Vercel | [doctor-tracker-client.vercel.app](https://doctor-tracker-client.vercel.app) *(Deploying)* | Active |
+| **Production Website** | Vercel | [doctor-tracker-frontend-theta.vercel.app](https://doctor-tracker-frontend-theta.vercel.app) | Verified Live |
 | **Connected Backend API** | Railway | [doctor-tracker-backend-production.up.railway.app](https://doctor-tracker-backend-production.up.railway.app) | Verified Live |
 
 ---
