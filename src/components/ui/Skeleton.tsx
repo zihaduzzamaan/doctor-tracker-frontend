@@ -13,7 +13,7 @@ export function Skeleton({
   ...props
 }: SkeletonProps) {
   const animationClass =
-    variant === 'shimmer' ? 'skeleton-shimmer' : 'animate-pulse bg-slate-200';
+    variant === 'shimmer' ? 'skeleton-shimmer' : 'animate-pulse bg-slate-200 dark:bg-slate-800';
 
   return (
     <div

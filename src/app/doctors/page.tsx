@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Navbar } from '@/components/layout/Navbar';
 import { DoctorCard, DoctorCardSkeleton } from '@/components/doctors/DoctorCard';
@@ -16,7 +17,7 @@ import { api } from '@/lib/api';
 import { formatErrorMessage } from '@/lib/errorHandler';
 import { Doctor, ApiResponse } from '@/lib/types';
 import { useDebounce } from '@/hooks/useDebounce';
-import { Search, Plus, Stethoscope, Filter } from 'lucide-react';
+import { Search, Plus, Stethoscope } from 'lucide-react';
 
 const SPECIALIZATIONS = [
   { value: '', label: 'All Specializations' },
@@ -38,6 +39,17 @@ const HOSPITALS = [
 ];
 
 export default function DoctorsPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+      }
+    }
+  }, [router]);
+
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
   const [specialization, setSpecialization] = useState('');
@@ -86,17 +98,17 @@ export default function DoctorsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] flex flex-col transition-colors duration-150">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
               Medical Practitioners Directory
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Browse doctor profiles, inspect real-time inpatient caseloads, and manage department staffing.
             </p>
           </div>
@@ -114,7 +126,7 @@ export default function DoctorsPage() {
         </div>
 
         {/* Filter Toolbar with Search, Department, Hospital & Date-wise Filter */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-subtle space-y-3">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-subtle space-y-3 transition-colors">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input
               placeholder="Search by doctor name..."
@@ -136,23 +148,23 @@ export default function DoctorsPage() {
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-              <span className="font-semibold text-slate-600">Registered Date Range:</span>
+              <span className="font-semibold text-slate-600 dark:text-slate-400">Registered Date Range:</span>
               <div className="flex items-center gap-2">
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-clinical-600"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
                   title="Registered Start Date"
                 />
-                <span className="text-slate-400">to</span>
+                <span className="text-slate-400 dark:text-slate-500">to</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-clinical-600"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
                   title="Registered End Date"
                 />
               </div>
@@ -167,7 +179,7 @@ export default function DoctorsPage() {
                   setStartDate('');
                   setEndDate('');
                 }}
-                className="text-xs font-semibold text-rose-600 hover:text-rose-700 underline self-start sm:self-auto"
+                className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 underline self-start sm:self-auto"
               >
                 Clear All Filters
               </button>
@@ -193,7 +205,7 @@ export default function DoctorsPage() {
           </div>
         ) : doctors.length === 0 ? (
           <EmptyState
-            icon={<Stethoscope className="w-6 h-6 text-slate-400" />}
+            icon={<Stethoscope className="w-6 h-6 text-slate-400 dark:text-slate-500" />}
             title="No Practitioners Found"
             description="No medical doctors match your current search criteria or department filter."
             actionLabel="Reset Search Filters"

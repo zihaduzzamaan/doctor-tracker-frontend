@@ -37,17 +37,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantStyles = {
       primary:
-        'bg-clinical-600 text-white hover:bg-clinical-700 active:bg-clinical-800 shadow-sm border border-transparent',
+        'bg-clinical-600 text-white hover:bg-clinical-500 active:bg-clinical-700 shadow-sm border border-transparent',
       secondary:
-        'bg-slate-100 text-slate-800 hover:bg-slate-200 active:bg-slate-300 border border-slate-200',
+        'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 active:bg-slate-300 border border-slate-200 dark:border-slate-700',
       outline:
-        'bg-white text-slate-700 hover:bg-slate-50 border border-slate-300 active:bg-slate-100 shadow-sm',
+        'bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 active:bg-slate-100 shadow-sm',
       accent:
-        'bg-accent-500 text-slate-900 hover:bg-accent-600 active:bg-accent-700 font-bold shadow-sm border border-transparent',
+        'bg-accent-500 text-slate-900 hover:bg-accent-400 active:bg-accent-600 font-bold shadow-sm border border-transparent',
       danger:
-        'bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800 shadow-sm border border-transparent',
+        'bg-rose-600 text-white hover:bg-rose-500 active:bg-rose-700 shadow-sm border border-transparent',
       ghost:
-        'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-transparent',
+        'bg-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 border border-transparent',
     };
 
     return (

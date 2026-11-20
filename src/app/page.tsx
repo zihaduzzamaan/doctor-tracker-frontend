@@ -20,7 +20,6 @@ import {
   BedDouble,
   Activity,
   CheckCircle2,
-  UserPlus,
   Stethoscope,
   Plus,
 } from 'lucide-react';
@@ -53,26 +52,27 @@ export default function DashboardPage() {
 
   const summary = summaryData?.data;
 
-  // Compute status metrics
+  // Compute status metrics (supporting both under_observation and observation keys)
   const activeAdmissions =
     summary?.statusBreakdown.find((s) => s._id === 'admitted')?.count || 0;
   const observationCount =
-    summary?.statusBreakdown.find((s) => s._id === 'observation')?.count || 0;
+    (summary?.statusBreakdown.find((s) => s._id === 'under_observation')?.count || 0) +
+    (summary?.statusBreakdown.find((s) => s._id === 'observation')?.count || 0);
   const dischargedCount =
     summary?.statusBreakdown.find((s) => s._id === 'discharged')?.count || 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] flex flex-col transition-colors duration-150">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Header & Quick Action Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
               Clinical Operations Dashboard
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Real-time monitoring of practitioner workloads, inpatient admissions, and diagnostic trends.
             </p>
           </div>
@@ -80,7 +80,7 @@ export default function DashboardPage() {
             <Button
               variant="outline"
               size="sm"
-              leftIcon={<Stethoscope className="w-4 h-4 text-clinical-600" />}
+              leftIcon={<Stethoscope className="w-4 h-4 text-clinical-600 dark:text-clinical-400" />}
               onClick={() => setIsDoctorModalOpen(true)}
             >
               Add Doctor

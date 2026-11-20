@@ -58,7 +58,7 @@ export function PatientModal({
     condition: '',
     admission_date: new Date().toISOString().split('T')[0],
     doctor_id: '',
-    status: 'admitted' as 'admitted' | 'observation' | 'discharged',
+    status: 'admitted' as 'admitted' | 'observation' | 'under_observation' | 'discharged',
     notes: '',
   });
 
@@ -81,7 +81,10 @@ export function PatientModal({
           ? new Date(patient.admission_date).toISOString().split('T')[0]
           : new Date().toISOString().split('T')[0],
         doctor_id: docId,
-        status: patient.status || 'admitted',
+        status:
+          patient.status === 'under_observation'
+            ? 'observation'
+            : (patient.status || 'admitted'),
         notes: patient.notes || '',
       });
     } else {
@@ -155,7 +158,7 @@ export function PatientModal({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {errors.form && (
-          <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs font-semibold text-rose-700">
+          <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-lg text-xs font-semibold text-rose-700 dark:text-rose-300">
             {errors.form}
           </div>
         )}
@@ -245,26 +248,26 @@ export function PatientModal({
             onChange={(e) =>
               setFormData({
                 ...formData,
-                status: e.target.value as 'admitted' | 'observation' | 'discharged',
+                status: e.target.value as 'admitted' | 'observation' | 'under_observation' | 'discharged',
               })
             }
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
             Clinical Notes (Optional)
           </label>
           <textarea
             rows={2}
-            className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:border-clinical-600 focus:ring-2 focus:ring-clinical-100 focus:outline-none"
+            className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-3 text-sm focus:border-clinical-600 dark:focus:border-clinical-400 focus:ring-2 focus:ring-clinical-100 dark:focus:ring-clinical-950/60 focus:outline-none"
             placeholder="Add relevant triage notes or treatment observations..."
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
           <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>

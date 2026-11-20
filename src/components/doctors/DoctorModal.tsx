@@ -116,7 +116,7 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {errors.form && (
-          <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs font-semibold text-rose-700">
+          <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-lg text-xs font-semibold text-rose-700 dark:text-rose-300">
             {errors.form}
           </div>
         )}
@@ -167,7 +167,7 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
           />
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
           <Button type="button" variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>

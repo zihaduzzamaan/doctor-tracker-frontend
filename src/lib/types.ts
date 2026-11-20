@@ -26,7 +26,7 @@ export interface Patient {
   condition: string;
   admission_date: string;
   doctor_id: string | { _id: string; doctor_name: string; specialization: string; hospital: string };
-  status: 'admitted' | 'observation' | 'discharged';
+  status: 'admitted' | 'observation' | 'under_observation' | 'discharged';
   notes?: string;
   createdAt: string;
   updatedAt: string;
