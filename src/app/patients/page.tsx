@@ -116,6 +116,7 @@ export default function PatientsPage() {
               setEditingPatient(null);
               setIsModalOpen(true);
             }}
+            className="w-full sm:w-auto justify-center"
           >
             Record Admission
           </Button>
@@ -136,9 +137,9 @@ export default function PatientsPage() {
               />
             </div>
 
-            {/* Accessible Segmented Control without Clipping */}
+            {/* Responsive 2x2 on Mobile, Inline on Desktop without Clipping */}
             <div
-              className="inline-flex p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200/80 dark:border-neutral-800 gap-1 overflow-x-auto max-w-full"
+              className="grid grid-cols-2 sm:flex sm:flex-row p-1 bg-slate-100 dark:bg-neutral-900 rounded-xl border border-slate-200/80 dark:border-neutral-800 gap-1 w-full sm:w-auto"
               role="tablist"
               aria-label="Filter patients by clinical status"
             >
@@ -153,7 +154,7 @@ export default function PatientsPage() {
                       setStatus(f.value);
                       setPage(1);
                     }}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-clinical-500 ${
+                    className={`px-3 py-2 sm:py-1.5 sm:px-3.5 rounded-lg text-xs font-semibold text-center whitespace-nowrap transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-clinical-500 ${
                       active
                         ? 'bg-clinical-600 text-white shadow-sm font-bold ring-1 ring-inset ring-clinical-500'
                         : 'text-slate-600 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-neutral-800'
@@ -166,10 +167,10 @@ export default function PatientsPage() {
             </div>
           </div>
 
-          {/* Condition and Date-Wise Filters */}
-          <div className="pt-2 border-t border-slate-100 dark:border-neutral-800 flex flex-wrap items-center gap-3 text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-slate-500 dark:text-neutral-400">Condition:</span>
+          {/* Condition and Date-Wise Filters with Zero Horizontal Overflow */}
+          <div className="pt-2 border-t border-slate-100 dark:border-neutral-800 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
+              <span className="font-semibold text-slate-500 dark:text-neutral-400 shrink-0">Condition:</span>
               <Input
                 placeholder="e.g. Cardiology, Hypertension"
                 value={condition}
@@ -177,33 +178,35 @@ export default function PatientsPage() {
                   setCondition(e.target.value);
                   setPage(1);
                 }}
-                className="w-48 text-xs py-1.5 min-h-[36px]"
+                className="w-full sm:w-48 text-xs py-1.5 min-h-[36px]"
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-500 dark:text-neutral-400">Admission Date:</span>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => {
-                  setStartDate(e.target.value);
-                  setPage(1);
-                }}
-                className="border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
-                title="Start Date"
-              />
-              <span className="text-slate-400 dark:text-neutral-500">to</span>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => {
-                  setEndDate(e.target.value);
-                  setPage(1);
-                }}
-                className="border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
-                title="End Date"
-              />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 flex-1 min-w-0">
+              <span className="font-semibold text-slate-500 dark:text-neutral-400 shrink-0">Admission Date:</span>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full sm:w-auto min-w-0 border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
+                  title="Start Date"
+                />
+                <span className="text-slate-400 dark:text-neutral-500 shrink-0">to</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full sm:w-auto min-w-0 border border-slate-300 dark:border-neutral-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-clinical-500"
+                  title="End Date"
+                />
+              </div>
             </div>
 
             {(search || status || condition || startDate || endDate) && (
@@ -218,7 +221,7 @@ export default function PatientsPage() {
                   setEndDate('');
                   setPage(1);
                 }}
-                className="ml-auto py-1 px-2.5 text-xs text-slate-500 dark:text-neutral-400 hover:text-slate-800 dark:hover:text-white"
+                className="w-full sm:w-auto sm:ml-auto py-1 px-2.5 text-xs text-slate-500 dark:text-neutral-400 hover:text-slate-800 dark:hover:text-slate-100 justify-center"
                 leftIcon={<X className="w-3.5 h-3.5" />}
               >
                 Clear Filters

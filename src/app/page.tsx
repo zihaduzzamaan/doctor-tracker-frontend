@@ -76,12 +76,13 @@ export default function DashboardPage() {
               Real-time monitoring of practitioner workloads, inpatient admissions, and diagnostic trends.
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
               leftIcon={<Stethoscope className="w-4 h-4 text-clinical-600 dark:text-clinical-400" />}
               onClick={() => setIsDoctorModalOpen(true)}
+              className="flex-1 sm:flex-initial justify-center"
             >
               Add Doctor
             </Button>
@@ -90,6 +91,7 @@ export default function DashboardPage() {
               size="sm"
               leftIcon={<Plus className="w-4 h-4" />}
               onClick={() => setIsPatientModalOpen(true)}
+              className="flex-1 sm:flex-initial justify-center"
             >
               New Admission
             </Button>

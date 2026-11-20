@@ -56,7 +56,7 @@ export function Drawer({
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-full sm:max-w-xl bg-white dark:bg-[#121212] shadow-drawer border-l border-slate-200 dark:border-neutral-800 flex flex-col z-10 transition-colors">
           {/* Header */}
           <div className="p-5 sm:p-6 border-b border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900 flex items-start justify-between gap-4">

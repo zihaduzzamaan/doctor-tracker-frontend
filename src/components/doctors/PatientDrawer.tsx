@@ -183,11 +183,10 @@ export function PatientDrawer({
               return (
                 <div
                   key={patient._id}
-                  className={`rounded-xl border p-4 transition-all ${
-                    isDischarged
-                      ? 'border-slate-200 dark:border-neutral-800 bg-slate-50/60 dark:bg-neutral-900/40 opacity-75'
-                      : 'border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] hover:border-clinical-300 dark:hover:border-clinical-600 shadow-subtle'
-                  }`}
+                  className={`rounded-xl border p-4 transition-all ${isDischarged
+                    ? 'border-slate-200 dark:border-neutral-800 bg-slate-50/60 dark:bg-neutral-900/40 opacity-75'
+                    : 'border-slate-200 dark:border-neutral-800 bg-white dark:bg-[#121212] hover:border-clinical-300 dark:hover:border-clinical-600 shadow-subtle'
+                    }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>

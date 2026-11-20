@@ -120,6 +120,7 @@ export default function DoctorsPage() {
               setEditingDoctor(null);
               setIsDoctorModalOpen(true);
             }}
+            className="w-full sm:w-auto justify-center"
           >
             Register Practitioner
           </Button>
@@ -149,22 +150,22 @@ export default function DoctorsPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-neutral-800 text-xs">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-              <span className="font-semibold text-slate-600 dark:text-neutral-400">Registered Date Range:</span>
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1 min-w-0">
+              <span className="font-semibold text-slate-600 dark:text-neutral-400 shrink-0">Registered Date Range:</span>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
+                  className="w-full sm:w-auto min-w-0 rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
                   title="Registered Start Date"
                 />
-                <span className="text-slate-400 dark:text-neutral-500">to</span>
+                <span className="text-slate-400 dark:text-neutral-500 shrink-0">to</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
+                  className="w-full sm:w-auto min-w-0 rounded-lg border border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:ring-1 focus:ring-clinical-600"
                   title="Registered End Date"
                 />
               </div>
@@ -179,7 +180,7 @@ export default function DoctorsPage() {
                   setStartDate('');
                   setEndDate('');
                 }}
-                className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 underline self-start sm:self-auto"
+                className="w-full sm:w-auto py-1.5 px-3 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 bg-rose-50/50 dark:bg-rose-950/20 sm:bg-transparent sm:dark:bg-transparent text-center border border-rose-200/50 dark:border-rose-900/30 sm:border-0"
               >
                 Clear All Filters
               </button>

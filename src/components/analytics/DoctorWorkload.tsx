@@ -44,8 +44,8 @@ export function DoctorWorkload({ doctors, isLoading }: DoctorWorkloadProps) {
   return (
     <div className="bg-white dark:bg-[#121212] rounded-xl border border-slate-200 dark:border-neutral-800 p-6 shadow-subtle flex flex-col justify-between transition-colors">
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <div>
+        <div className="flex items-start justify-between gap-2 mb-4">
+          <div className="min-w-0">
             <h3 className="text-base font-bold text-slate-900 dark:text-neutral-100 tracking-tight">
               Practitioner Caseload Ranking
             </h3>
@@ -55,7 +55,7 @@ export function DoctorWorkload({ doctors, isLoading }: DoctorWorkloadProps) {
           </div>
           <Link
             href="/doctors"
-            className="text-xs font-semibold text-clinical-600 dark:text-clinical-400 hover:text-clinical-700 dark:hover:text-clinical-300 flex items-center gap-1 focus-ring rounded p-1"
+            className="text-xs font-semibold text-clinical-600 dark:text-clinical-400 hover:text-clinical-700 dark:hover:text-clinical-300 flex items-center gap-1 focus-ring rounded p-1 shrink-0 whitespace-nowrap mt-0.5"
           >
             <span>View All</span>
             <ArrowRight className="w-3.5 h-3.5" />
