@@ -197,10 +197,10 @@ function PatientsContent() {
                       setStatus(f.value);
                       setPage(1);
                     }}
-                    className={`px-3 py-2 sm:py-1.5 sm:px-3.5 rounded-lg text-xs font-semibold text-center whitespace-nowrap transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-clinical-500 ${
+                    className={`relative px-3 py-2 sm:py-1.5 sm:px-3.5 rounded-lg text-xs font-semibold text-center whitespace-nowrap select-none transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
                       active
-                        ? 'bg-clinical-600 text-white shadow-sm font-bold ring-1 ring-inset ring-clinical-500'
-                        : 'text-slate-600 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-neutral-800'
+                        ? 'bg-clinical-600 text-white shadow-xs font-bold scale-[1.02]'
+                        : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-white/60 dark:hover:bg-neutral-800/60'
                     }`}
                   >
                     {f.label}

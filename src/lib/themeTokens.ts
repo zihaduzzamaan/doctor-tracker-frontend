@@ -106,9 +106,9 @@ export const pillTokens = {
   under_observation: badgeTokens.under_observation,
   discharged: badgeTokens.discharged,
   navActive:
-    'bg-clinical-50 dark:bg-neutral-900 text-clinical-700 dark:text-clinical-400 border border-clinical-200/80 dark:border-neutral-800 shadow-subtle',
+    'bg-white dark:bg-neutral-800 text-clinical-700 dark:text-clinical-400 shadow-xs font-bold',
   navInactive:
-    'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-900/60',
+    'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-neutral-100 hover:bg-slate-200/50 dark:hover:bg-neutral-800/50',
 } as const;
 
 /**

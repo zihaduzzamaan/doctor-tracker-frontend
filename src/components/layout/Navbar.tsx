@@ -74,8 +74,11 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center gap-1.5" aria-label="Main Navigation">
+            {/* Desktop Navigation Links: Impeccable Segmented Pill Track */}
+            <nav
+              className="hidden md:flex items-center p-1 rounded-xl bg-slate-100/70 dark:bg-neutral-900/80 border border-slate-200/60 dark:border-neutral-800 gap-1 backdrop-blur-xs select-none"
+              aria-label="Main Navigation"
+            >
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 const active = isActive(link.href);
@@ -83,12 +86,12 @@ export function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all focus-ring ${
+                    className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold select-none transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
                       active ? pillTokens.navActive : pillTokens.navInactive
                     }`}
                   >
                     <Icon
-                      className={`w-4 h-4 ${
+                      className={`w-3.5 h-3.5 transition-colors duration-200 ${
                         active ? 'text-clinical-600 dark:text-clinical-400' : 'text-slate-400 dark:text-neutral-500'
                       }`}
                     />
@@ -157,10 +160,10 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold min-h-[48px] transition ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold min-h-[48px] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-clinical-500 ${
                     active
-                      ? `${pillTokens.navActive} font-bold`
-                      : 'text-slate-700 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800'
+                      ? 'bg-clinical-50 dark:bg-neutral-800 text-clinical-700 dark:text-clinical-400 font-bold'
+                      : 'text-slate-700 dark:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800/60'
                   }`}
                 >
                   <Icon
