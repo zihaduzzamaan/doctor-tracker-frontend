@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Navbar } from '@/components/layout/Navbar';
 import { PatientTable, PatientTableSkeleton } from '@/components/patients/PatientTable';
@@ -16,8 +16,9 @@ import { Patient, ApiResponse } from '@/lib/types';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Search, Plus, BedDouble, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
-export default function PatientsPage() {
+function PatientsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -58,6 +59,59 @@ export default function PatientsPage() {
     },
   });
 
+  const patients = data?.data || [];
+  const pagination = data?.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 };
+
+  // Synchronize modal state with URL query parameters for dedicated links
+  useEffect(() => {
+    const modalParam = searchParams.get('modal');
+    const idParam = searchParams.get('id');
+
+    if (modalParam === 'admit') {
+      setEditingPatient(null);
+      setIsModalOpen(true);
+    } else if (modalParam === 'edit' && idParam) {
+      if (patients.length > 0) {
+        const found = patients.find((p) => p._id === idParam);
+        if (found) {
+          setEditingPatient(found);
+          setIsModalOpen(true);
+        }
+      }
+    } else if (!modalParam) {
+      setIsModalOpen(false);
+      setEditingPatient(null);
+    }
+  }, [searchParams, patients]);
+
+  const openAdmitModal = () => {
+    setEditingPatient(null);
+    setIsModalOpen(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('modal', 'admit');
+    params.delete('id');
+    router.push(`/patients?${params.toString()}`, { scroll: false });
+  };
+
+  const handleEdit = (patient: Patient) => {
+    setEditingPatient(patient);
+    setIsModalOpen(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('modal', 'edit');
+    params.set('id', patient._id);
+    router.push(`/patients?${params.toString()}`, { scroll: false });
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingPatient(null);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('modal');
+    params.delete('id');
+    const query = params.toString();
+    router.push(query ? `/patients?${query}` : '/patients', { scroll: false });
+  };
+
   const dischargeMutation = useMutation({
     mutationFn: (patientId: string) =>
       api.put(`/patients/${patientId}`, { status: 'discharged' }),
@@ -78,20 +132,12 @@ export default function PatientsPage() {
     },
   });
 
-  const patients = data?.data || [];
-  const pagination = data?.pagination || { page: 1, limit: 10, total: 0, totalPages: 1 };
-
   const statusFilters = [
     { label: 'All Inpatients', value: '' },
     { label: 'Admitted', value: 'admitted' },
     { label: 'Observation', value: 'under_observation' },
     { label: 'Discharged', value: 'discharged' },
   ];
-
-  const handleEdit = (patient: Patient) => {
-    setEditingPatient(patient);
-    setIsModalOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black flex flex-col transition-colors duration-150">
@@ -112,10 +158,7 @@ export default function PatientsPage() {
             variant="primary"
             size="sm"
             leftIcon={<Plus className="w-4 h-4" />}
-            onClick={() => {
-              setEditingPatient(null);
-              setIsModalOpen(true);
-            }}
+            onClick={openAdmitModal}
             className="w-full sm:w-auto justify-center"
           >
             Record Admission
@@ -304,9 +347,17 @@ export default function PatientsPage() {
       {/* Admission Modal */}
       <PatientModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
         patient={editingPatient}
       />
     </div>
+  );
+}
+
+export default function PatientsPage() {
+  return (
+    <Suspense fallback={null}>
+      <PatientsContent />
+    </Suspense>
   );
 }

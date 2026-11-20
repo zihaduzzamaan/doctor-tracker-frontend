@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Navbar } from '@/components/layout/Navbar';
 import { MetricCard, MetricCardSkeleton } from '@/components/analytics/MetricCard';
@@ -24,8 +24,9 @@ import {
   Plus,
 } from 'lucide-react';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isDoctorModalOpen, setIsDoctorModalOpen] = useState(false);
   const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
 
@@ -37,6 +38,51 @@ export default function DashboardPage() {
       }
     }
   }, [router]);
+
+  // Synchronize modal state with URL query parameters for dedicated links
+  useEffect(() => {
+    const modal = searchParams.get('modal');
+    if (modal === 'register-doctor') {
+      setIsDoctorModalOpen(true);
+      setIsPatientModalOpen(false);
+    } else if (modal === 'admit') {
+      setIsPatientModalOpen(true);
+      setIsDoctorModalOpen(false);
+    } else {
+      setIsDoctorModalOpen(false);
+      setIsPatientModalOpen(false);
+    }
+  }, [searchParams]);
+
+  const openDoctorModal = () => {
+    setIsDoctorModalOpen(true);
+    const p = new URLSearchParams(searchParams.toString());
+    p.set('modal', 'register-doctor');
+    router.push(`/?${p.toString()}`, { scroll: false });
+  };
+
+  const openPatientModal = () => {
+    setIsPatientModalOpen(true);
+    const p = new URLSearchParams(searchParams.toString());
+    p.set('modal', 'admit');
+    router.push(`/?${p.toString()}`, { scroll: false });
+  };
+
+  const closeDoctorModal = () => {
+    setIsDoctorModalOpen(false);
+    const p = new URLSearchParams(searchParams.toString());
+    p.delete('modal');
+    const q = p.toString();
+    router.push(q ? `/?${q}` : '/', { scroll: false });
+  };
+
+  const closePatientModal = () => {
+    setIsPatientModalOpen(false);
+    const p = new URLSearchParams(searchParams.toString());
+    p.delete('modal');
+    const q = p.toString();
+    router.push(q ? `/?${q}` : '/', { scroll: false });
+  };
 
   const {
     data: summaryData,
@@ -81,7 +127,7 @@ export default function DashboardPage() {
               variant="outline"
               size="sm"
               leftIcon={<Stethoscope className="w-4 h-4 text-clinical-600 dark:text-clinical-400" />}
-              onClick={() => setIsDoctorModalOpen(true)}
+              onClick={openDoctorModal}
               className="flex-1 sm:flex-initial justify-center"
             >
               Add Doctor
@@ -90,7 +136,7 @@ export default function DashboardPage() {
               variant="primary"
               size="sm"
               leftIcon={<Plus className="w-4 h-4" />}
-              onClick={() => setIsPatientModalOpen(true)}
+              onClick={openPatientModal}
               className="flex-1 sm:flex-initial justify-center"
             >
               New Admission
@@ -175,12 +221,20 @@ export default function DashboardPage() {
       {/* Reusable Modals */}
       <DoctorModal
         isOpen={isDoctorModalOpen}
-        onClose={() => setIsDoctorModalOpen(false)}
+        onClose={closeDoctorModal}
       />
       <PatientModal
         isOpen={isPatientModalOpen}
-        onClose={() => setIsPatientModalOpen(false)}
+        onClose={closePatientModal}
       />
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={null}>
+      <DashboardContent />
+    </Suspense>
   );
 }

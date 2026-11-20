@@ -111,7 +111,7 @@ export function DoctorModal({ isOpen, onClose, doctor }: DoctorModalProps) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={doctor ? 'Edit Practitioner Profile' : 'Register New Medical Practitioner'}
+      title={doctor ? 'Edit Practitioner Profile' : 'Register New Doctor'}
       description="Add or update doctor credentials, department affiliation, and contact details."
     >
       <form onSubmit={handleSubmit} className="space-y-4">

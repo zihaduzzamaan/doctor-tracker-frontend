@@ -59,19 +59,19 @@ export function Drawer({
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-full sm:max-w-xl bg-white dark:bg-[#121212] shadow-drawer border-l border-slate-200 dark:border-neutral-800 flex flex-col z-10 transition-colors">
           {/* Header */}
-          <div className="p-5 sm:p-6 border-b border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900 flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h2 id="drawer-title" className="text-lg font-bold text-slate-900 dark:text-neutral-100 tracking-tight">
+          <div className="sticky top-0 p-4 sm:p-6 border-b border-slate-200 dark:border-neutral-800 bg-white/95 dark:bg-[#121212]/95 backdrop-blur z-20 flex items-start justify-between gap-4">
+            <div className="min-w-0 pr-2">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h2 id="drawer-title" className="text-base sm:text-lg font-bold text-slate-900 dark:text-neutral-100 tracking-tight truncate">
                   {title}
                 </h2>
                 {badge}
               </div>
-              {subtitle && <p className="mt-1 text-xs text-slate-500 dark:text-neutral-400">{subtitle}</p>}
+              {subtitle && <p className="mt-1 text-xs text-slate-500 dark:text-neutral-400 line-clamp-1 sm:line-clamp-none">{subtitle}</p>}
             </div>
             <button
               onClick={onClose}
-              className="rounded-lg p-2 text-slate-400 hover:text-slate-600 dark:hover:text-neutral-200 hover:bg-slate-200/60 dark:hover:bg-neutral-800 transition focus-ring min-h-[40px] min-w-[40px] flex items-center justify-center"
+              className="rounded-xl p-2 text-slate-400 hover:text-slate-600 dark:hover:text-neutral-200 hover:bg-slate-100 dark:hover:bg-neutral-800 transition focus-ring min-h-[44px] min-w-[44px] flex items-center justify-center shrink-0"
               aria-label="Close drawer"
             >
               <X className="w-5 h-5" />

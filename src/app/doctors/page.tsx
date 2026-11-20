@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Navbar } from '@/components/layout/Navbar';
 import { DoctorCard, DoctorCardSkeleton } from '@/components/doctors/DoctorCard';
@@ -38,8 +38,9 @@ const HOSPITALS = [
   { value: 'Cedar-Sinai Clinic', label: 'Cedar-Sinai Clinic' },
 ];
 
-export default function DoctorsPage() {
+function DoctorsContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -82,19 +83,112 @@ export default function DoctorsPage() {
 
   const doctors = data?.data || [];
 
+  // Synchronize modal and drawer state with URL query parameters for dedicated links
+  useEffect(() => {
+    const modalParam = searchParams.get('modal');
+    const idParam = searchParams.get('id');
+    const drawerParam = searchParams.get('drawer');
+    const doctorIdParam = searchParams.get('doctorId');
+
+    if (modalParam === 'register-doctor') {
+      setEditingDoctor(null);
+      setIsDoctorModalOpen(true);
+    } else if (modalParam === 'edit-doctor' && idParam) {
+      if (doctors.length > 0) {
+        const found = doctors.find((d) => d._id === idParam);
+        if (found) {
+          setEditingDoctor(found);
+          setIsDoctorModalOpen(true);
+        }
+      }
+    } else {
+      setIsDoctorModalOpen(false);
+      setEditingDoctor(null);
+    }
+
+    if (modalParam === 'admit') {
+      setTargetDoctorId(doctorIdParam || null);
+      setIsPatientModalOpen(true);
+    } else {
+      setIsPatientModalOpen(false);
+    }
+
+    if (drawerParam) {
+      if (doctors.length > 0) {
+        const found = doctors.find((d) => d._id === drawerParam);
+        if (found) {
+          setSelectedDoctor(found);
+          setIsDrawerOpen(true);
+        }
+      }
+    } else {
+      setIsDrawerOpen(false);
+      setSelectedDoctor(null);
+    }
+  }, [searchParams, doctors]);
+
+  const openRegisterDoctor = () => {
+    setEditingDoctor(null);
+    setIsDoctorModalOpen(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('modal', 'register-doctor');
+    params.delete('id');
+    router.push(`/doctors?${params.toString()}`, { scroll: false });
+  };
+
   const handleOpenDrawer = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
     setIsDrawerOpen(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('drawer', doctor._id);
+    router.push(`/doctors?${params.toString()}`, { scroll: false });
   };
 
   const handleEditDoctor = (doctor: Doctor) => {
     setEditingDoctor(doctor);
     setIsDoctorModalOpen(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('modal', 'edit-doctor');
+    params.set('id', doctor._id);
+    router.push(`/doctors?${params.toString()}`, { scroll: false });
   };
 
   const handleOpenAddPatient = (docId: string) => {
     setTargetDoctorId(docId);
     setIsPatientModalOpen(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('modal', 'admit');
+    params.set('doctorId', docId);
+    router.push(`/doctors?${params.toString()}`, { scroll: false });
+  };
+
+  const closeDoctorModal = () => {
+    setIsDoctorModalOpen(false);
+    setEditingDoctor(null);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('modal');
+    params.delete('id');
+    const query = params.toString();
+    router.push(query ? `/doctors?${query}` : '/doctors', { scroll: false });
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+    setSelectedDoctor(null);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('drawer');
+    const query = params.toString();
+    router.push(query ? `/doctors?${query}` : '/doctors', { scroll: false });
+  };
+
+  const closePatientModal = () => {
+    setIsPatientModalOpen(false);
+    setTargetDoctorId(null);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('modal');
+    params.delete('doctorId');
+    const query = params.toString();
+    router.push(query ? `/doctors?${query}` : '/doctors', { scroll: false });
   };
 
   return (
@@ -116,10 +210,7 @@ export default function DoctorsPage() {
             variant="primary"
             size="sm"
             leftIcon={<Plus className="w-4 h-4" />}
-            onClick={() => {
-              setEditingDoctor(null);
-              setIsDoctorModalOpen(true);
-            }}
+            onClick={openRegisterDoctor}
             className="w-full sm:w-auto justify-center"
           >
             Register Practitioner
@@ -234,23 +325,31 @@ export default function DoctorsPage() {
       <PatientDrawer
         doctor={selectedDoctor}
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={closeDrawer}
         onOpenAddPatient={handleOpenAddPatient}
       />
 
       {/* Add / Edit Doctor Modal */}
       <DoctorModal
         isOpen={isDoctorModalOpen}
-        onClose={() => setIsDoctorModalOpen(false)}
+        onClose={closeDoctorModal}
         doctor={editingDoctor}
       />
 
       {/* Inpatient Admission Modal */}
       <PatientModal
         isOpen={isPatientModalOpen}
-        onClose={() => setIsPatientModalOpen(false)}
+        onClose={closePatientModal}
         defaultDoctorId={targetDoctorId}
       />
     </div>
+  );
+}
+
+export default function DoctorsPage() {
+  return (
+    <Suspense fallback={null}>
+      <DoctorsContent />
+    </Suspense>
   );
 }
